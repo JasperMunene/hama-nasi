@@ -12,7 +12,7 @@ const Mover = ({progress}) => {
         width: "100%",
         height: "6px", // Rectangular height
         backgroundColor: "#f3f4f6", // Light background color for progress track
-        zIndex: 9999,
+        zIndex: 9999 ,
       }}
     >
       <div
@@ -28,3 +28,4 @@ const Mover = ({progress}) => {
 };
 
 export default Mover;
+// 
