@@ -3,31 +3,34 @@
 import { useState } from 'react';
 
 const Mover = () => {
-  // Define state variables for the form fields
+  
   const [location, setLocation] = useState('');
   const [houseType, setHouseType] = useState('');
-  const [progress, setProgress] = useState(50);  // Progress bar starts at 50%
+  const [progress, setProgress] = useState(15);  
 
-  // Handle the form submission (or continue button click)
+  
   const handleContinue = () => {
     console.log('Location:', location);
     console.log('House Type:', houseType);
-    // Here you could proceed to the next step, navigate, or update your app state.
+    
   };
 
   return (
     <div className="form-container">
-      {/* Website Name/Heading */}
+      
       <header className="header">
         <h1>Hama Nasi</h1>
       </header>
 
-      {/* Progress bar */}
+      
       <div className="progress-bar">
         <div className="progress" style={{ width: `${progress}%` }}></div>
       </div>
+      <header classname="header">
+        <h1>Tell Us  More About You</h1>
+      </header>
 
-      {/* Location input field */}
+      
       <div className="form-group">
         <label htmlFor="location">Your Location:</label>
         <input
@@ -39,7 +42,7 @@ const Mover = () => {
         />
       </div>
 
-      {/* House type dropdown */}
+      
       <div className="form-group">
         <label htmlFor="houseType">Select House Type:</label>
         <select
@@ -56,7 +59,7 @@ const Mover = () => {
         </select>
       </div>
 
-      {/* Continue button */}
+      
       <button onClick={handleContinue} className="continue-btn">
         Continue
       </button>
@@ -70,7 +73,10 @@ const Mover = () => {
         }
         .header {
           text-align: center;
+          width: 250;
+          height: 36;
           margin-bottom: 20px;
+          font-colour:#000000;
         }
         .progress-bar {
           width: 100%;
@@ -81,7 +87,7 @@ const Mover = () => {
         }
         .progress {
           height: 100%;
-          background-color: #4caf50; /* Green */
+          background-color: #4548ED; /* Green */
           border-radius: 5px;
         }
         .form-group {
@@ -102,7 +108,7 @@ const Mover = () => {
           width: 100%;
           padding: 10px;
           font-size: 16px;
-          background-color: #4caf50;
+          background-color: #7D97F4;
           color: white;
           border: none;
           border-radius: 5px;
