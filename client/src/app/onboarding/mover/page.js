@@ -61,7 +61,7 @@ const Mover = () => {
 
       
       <button onClick={handleContinue} className="continue-btn">
-        Continue
+        Continue →
       </button>
 
       <style jsx>{`
@@ -115,7 +115,7 @@ const Mover = () => {
           cursor: pointer;
         }
         .continue-btn:hover {
-          background-color: #45a049;
+          background-color: ##7D97F4;
         }
       `}</style>
     </div>
