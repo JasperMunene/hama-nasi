@@ -6,7 +6,7 @@ const company = () => {
   
   const [location, setLocation] = useState('');
   const [houseType, setHouseType] = useState('');
-  const [progress, setProgress] = useState(15);  
+  const [progress, setProgress] = useState(50);  
 
   
   const handleContinue = () => {
