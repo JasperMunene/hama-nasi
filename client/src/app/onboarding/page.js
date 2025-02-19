@@ -1,30 +1,30 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation'; 
-import { FaTruckMoving, FaBox } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
+import { FaBox } from 'react-icons/fa';
+import { PiTruckThin } from 'react-icons/pi'; // Thin outlined truck icon
 import Image from 'next/image';
 
 const Onboarding = () => {
   const [selectedOption, setSelectedOption] = useState(null);
-  const [progress, setProgress] = useState(15); // Initial progress at 15%
+  const [progress, setProgress] = useState(15);
   const router = useRouter();
 
   const handleSelect = (option) => {
     setSelectedOption(option);
-    setProgress(30); // Update progress when user selects an option
+    setProgress(30);
   };
 
   const handleContinue = () => {
-    setProgress(50); // Update progress when clicking continue
-
+    setProgress(50);
     setTimeout(() => {
       if (selectedOption === 'Mover') {
-        router.push('/onboarding/mover'); 
+        router.push('/onboarding/mover');
       } else if (selectedOption === 'Moving Company') {
-        router.push('/onboarding/company');
+        router.push('/onboarding/moving-company');
       }
-    }, 500); // Small delay to show progress animation
+    }, 500);
   };
 
   return (
@@ -37,7 +37,7 @@ const Onboarding = () => {
         <div className="w-48 h-2 bg-gray-300 rounded-full overflow-hidden mb-8">
           <div 
             className="h-full bg-[#4548ED] transition-all duration-300" 
-            style={{ width: `${progress}%` }} // Dynamic width update
+            style={{ width: `${progress}%` }}
           ></div>
         </div>
 
@@ -46,6 +46,7 @@ const Onboarding = () => {
 
         {/* Options */}
         <div className="flex gap-6">
+          {/* Mover (Box) */}
           <button
             className={`w-44 h-44 flex flex-col items-center justify-center rounded-lg transition ${
               selectedOption === 'Mover' ? 'bg-[#3336D6]' : 'bg-[#4548ED]'
@@ -56,13 +57,14 @@ const Onboarding = () => {
             <span className="text-lg font-semibold">Mover</span>
           </button>
 
+          {/* Moving Company (Outlined Truck) */}
           <button
-            className={`w-44 h-44 flex flex-col items-center justify-center rounded-lg transition ${
-              selectedOption === 'Moving Company' ? 'bg-[#3336D6]' : 'bg-[#4548ED]'
-            } text-white`}
+            className={`w-44 h-44 flex flex-col items-center justify-center rounded-lg border-4 ${
+              selectedOption === 'Moving Company' ? 'border-[#3336D6] text-[#3336D6]' : 'border-[#4548ED] text-[#4548ED]'
+            } transition bg-transparent`}
             onClick={() => handleSelect('Moving Company')}
           >
-            <FaTruckMoving className="text-5xl mb-2" />
+            <PiTruckThin className="text-5xl mb-2" />
             <span className="text-lg font-semibold">Moving Company</span>
           </button>
         </div>
@@ -79,7 +81,17 @@ const Onboarding = () => {
         </button>
       </div>
 
-     
+      {/* Right Section */}
+      <div className="w-1/2 flex items-center justify-center">
+      <Image 
+            src="/WhatsApp Image 2025-02-19 at 15.20.39.jpeg" 
+            alt="Ongeza"
+            width={200} 
+            height={500} 
+            className="object-contain"
+      />
+
+      </div>
     </div>
   );
 };
