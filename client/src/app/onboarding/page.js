@@ -56,7 +56,7 @@ const onboarding = () => {
             }`}
             onClick={() => handleSelect('Moving Company')}
           >
-            <PiTruckThin className="text-5xl mb-2" />
+            <PiTruckThin className="text-5xl  mb-2" />
             <span className="text-lg font-semibold">Moving Company</span>
           </button>
         </div>
