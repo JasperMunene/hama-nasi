@@ -12,7 +12,7 @@ const whyChooseUsData = [
     reverse: false,
   },
   {
-    title: "Beyond Moving - Crafting Your Perfect Move",
+    title: "Beyond Moving-Crafting Your Perfect Move",
     description: "Discover a moving experience like no other at Hama Nasi. We go beyond merely transporting items; we craft a personalized moving solution tailored to your needs.",
     imgSrc: "https://thumbs.dreamstime.com/b/movers-carrying-sofa-outside-truck-street-full-length-young-male-77511013.jpg",
     reverse: true,
@@ -38,7 +38,7 @@ function Page() {
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-text">
-          <h1>Your Local Moving Experts</h1>
+          <h1>YourLocal Moving Experts</h1>
           <p>We provide high-quality moving services.</p>
         </div>
         <div className="hero-image">
