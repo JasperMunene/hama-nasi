@@ -3,7 +3,7 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #e3f2fda1;
+  background-color: #b3bdc7e1;
 }
 
 /* Navbar */
@@ -57,7 +57,7 @@ button {
   align-items: center;
   justify-content: space-between;
   padding: 50px;
-  background-color: #e3f2fd;
+  background-color: #B3BDC7;
   text-align: left;
 }
 
