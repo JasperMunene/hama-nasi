@@ -1,18 +1,19 @@
-"use client"; // Needed for useState in Next.js App Router
-import React, { useState } from "react";
-import { useRouter } from "next/navigation"; // Next.js Router
+"use client";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useState } from "react";
 import "./login.css";
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const router = useRouter(); // Next.js navigation
+    const router = useRouter();
 
     const handleLogin = (e) => {
         e.preventDefault();
         if (email && password) {
-            alert("Login successful!"); 
-            router.push("/dashboard"); // Redirect after login
+            alert("Login successful!");
+            router.push("/dashboard");  // ✅ Make sure "/dashboard/page.js" exists
         } else {
             alert("Please enter your email and password.");
         }
@@ -26,24 +27,19 @@ export default function Login() {
                     <label>Email</label>
                     <input 
                         type="email" 
-                        placeholder="Enter your email" 
                         value={email} 
                         onChange={(e) => setEmail(e.target.value)} 
                         required 
                     />
-
                     <label>Password</label>
                     <input 
                         type="password" 
-                        placeholder="Enter your password" 
                         value={password} 
                         onChange={(e) => setPassword(e.target.value)} 
                         required 
                     />
-
                     <button type="submit">Login</button>
-
-                    <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+                    <p>Don't have an account? <Link href="/signup">Sign Up</Link></p>
                 </form>
             </div>
         </div>
