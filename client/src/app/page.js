@@ -11,8 +11,8 @@ function Page() {
       <nav className="navbar">
         <div className="logo">HAMA NASI</div>
         <ul className="nav-links">
-          <li><Link href="#services">Services</Link></li>
-          <li><Link href="#why-choose-us">Why Choose Us</Link></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#why-choose-us">Why Choose Us</a></li>
         </ul>
         <div className="auth-buttons">
           <Link href="/signup"><button className="signup">Sign Up</button></Link>
@@ -34,44 +34,34 @@ function Page() {
       {/* Services Section */}
       <section id="services" className="services">
         <h2>Comprehensive Solutions for Every Move</h2>
-        <div className="services-text">
-          <p>Explore Our Range Of Expert Services To Customize Your Moving Experience. From Local to Long-distance We’ve Got You Covered.</p>
-        </div>
+        <p className="services-text">Explore Our Range Of Expert Services To Customize Your Moving Experience. From Local to Long-distance We’ve Got You Covered.</p>
         <div className="services-container">
           <div className="service-card">
             <FontAwesomeIcon icon={faTruck} className="icon" />
-            <div>
-              <h3>Long-Distance Moving</h3>
-              <p>Moving to a different city? We've got you covered.</p>
-            </div>
+            <h3>Long-Distance Moving</h3>
+            <p>Moving to a different city? We've got you covered.</p>
           </div>
           <div className="service-card">
             <FontAwesomeIcon icon={faBox} className="icon" />
-            <div>
-              <h3>Packing & Unpacking</h3>
-              <p>Take the stress out of moving with our expert packing services.</p>
-            </div>
+            <h3>Packing & Unpacking</h3>
+            <p>Take the stress out of moving with our expert packing services.</p>
           </div>
           <div className="service-card">
             <FontAwesomeIcon icon={faWarehouse} className="icon" />
-            <div>
-              <h3>Secure Storage Services</h3>
-              <p>Our storage facilities are safe and secure for your belongings.</p>
-            </div>
+            <h3>Secure Storage Services</h3>
+            <p>Our storage facilities are safe and secure for your belongings.</p>
           </div>
           <div className="service-card">
             <FontAwesomeIcon icon={faTools} className="icon" />
-            <div>
-              <h3>Furniture Assembly</h3>
-              <p>We help with disassembling and reassembling your furniture.</p>
-            </div>
+            <h3>Furniture Assembly</h3>
+            <p>We help with disassembling and reassembling your furniture.</p>
           </div>
         </div>
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="why-choose-us">
-        <h2>// Why Choose Us</h2>
+      <section id="why-choose-us" className="why-choose-us">
+        <h2>Why Choose Us</h2>
         <div className="why-content">
           <div className="why-item">
             <h3>Your Trusted Moving Partner</h3>
@@ -81,9 +71,7 @@ function Page() {
             <img src="https://quickmover.ca/wp-content/uploads/2024/07/why-us-6.webp" alt="Moving Services" />
           </div>
         </div>
-
-        <h2>// Why Choose Us</h2>
-        <div className="why-content">
+        <div className="why-content why-reverse">
           <div className="why-image">
             <img src="https://thumbs.dreamstime.com/b/movers-carrying-sofa-outside-truck-street-full-length-young-male-77511013.jpg" alt="Moving Services" />
           </div>
@@ -96,13 +84,25 @@ function Page() {
 
       {/* Footer */}
       <footer className="footer">
-        <div>HAMA NASI</div>
-        <div className="footer-links">
-          <a href="#">Services</a>
-          <p>Residential Moving</p>
-          <p>Long-distance Moving</p>
-          <p>Packing and Unpacking services</p>
-          <a href="#">Contact Us</a>
+        <div className="footer-content">
+          <div className="footer-section">
+            <h3>HAMA NASI</h3>
+            <p>Your trusted moving partner</p>
+          </div>
+          <div className="footer-section">
+            <h4>Services</h4>
+            <ul>
+              <li>Residential Moving</li>
+              <li>Long-distance Moving</li>
+              <li>Packing & Unpacking</li>
+            </ul>
+          </div>
+          <div className="footer-section">
+            <h4>Contact Us</h4>
+            <p>Email: <a href="mailto:hamdi.yusuf@student.moringaschool.com">hamdi.yusuf@student.moringaschool.com</a></p>
+            <p>Email: <a href="mailto:jose.barasa@student.moringaschool.com">jose.barasa@student.moringaschool.com</a></p>
+            <p>Email: <a href="mailto:jasper.munene@student.moringaschool.com">jasper.munene@student.moringaschool.com</a></p>
+          </div>
         </div>
       </footer>
     </div>
