@@ -11,7 +11,7 @@ body {
   display: flex;
   justify-content: space-between;
   padding: 15px 50px;
-  background-color: rgba(0, 0, 255, 0.479);
+  background-color: #002244;
   color: white;
   align-items: center;
   gap: 2.5rem; /* Adjust for equal spacing */
