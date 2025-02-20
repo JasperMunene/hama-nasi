@@ -1,7 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTruck, faBox, faWarehouse, faTools } from "@fortawesome/free-solid-svg-icons";
-import Link from "next/link"; 
+import Link from "next/link";
 import "./page.css";
 
 function Page() {
@@ -23,7 +23,7 @@ function Page() {
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-text">
-          <h1>YourLocal Moving Experts</h1>
+          <h1>Your Local Moving Experts</h1>
           <p>We provide high-quality moving services.</p>
         </div>
         <div className="hero-image">
@@ -35,7 +35,7 @@ function Page() {
       <section id="services" className="services">
         <h2>Comprehensive Solutions for Every Move</h2>
         <div className="services-text">
-        <p>Explore Our Range Of Expert Services To Customize Your Moving Experience.From Local to Long-distance We’ve Got You Covered.</p>
+          <p>Explore Our Range Of Expert Services To Customize Your Moving Experience. From Local to Long-distance We’ve Got You Covered.</p>
         </div>
         <div className="services-container">
           <div className="service-card">
@@ -69,11 +69,10 @@ function Page() {
         </div>
       </section>
 
-
       {/* Why Choose Us Section */}
       <section className="why-choose-us">
         <h2>// Why Choose Us</h2>
-        <div className="why-content right">
+        <div className="why-content">
           <div className="why-item">
             <h3>Your Trusted Moving Partner</h3>
             <p>We value the trust you place in us to handle your move.</p>
@@ -84,7 +83,7 @@ function Page() {
         </div>
 
         <h2>// Why Choose Us</h2>
-        <div className="why-content left">
+        <div className="why-content">
           <div className="why-image">
             <img src="https://thumbs.dreamstime.com/b/movers-carrying-sofa-outside-truck-street-full-length-young-male-77511013.jpg" alt="Moving Services" />
           </div>
