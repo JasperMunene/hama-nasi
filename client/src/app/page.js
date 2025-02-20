@@ -4,6 +4,21 @@ import { faTruck, faBox, faWarehouse, faTools } from "@fortawesome/free-solid-sv
 import Link from "next/link";
 import "./page.css";
 
+const whyChooseUsData = [
+  {
+    title: "Your Trusted Moving Partner",
+    description: "At Hama Nasi, it’s about the trust you place in a moving partner to handle a pivotal moment in your life.",
+    imgSrc: "https://quickmover.ca/wp-content/uploads/2024/07/why-us-6.webp",
+    reverse: false,
+  },
+  {
+    title: "Beyond Moving - Crafting Your Perfect Move",
+    description: "Discover a moving experience like no other at Hama Nasi. We go beyond merely transporting items; we craft a personalized moving solution tailored to your needs.",
+    imgSrc: "https://thumbs.dreamstime.com/b/movers-carrying-sofa-outside-truck-street-full-length-young-male-77511013.jpg",
+    reverse: true,
+  }
+];
+
 function Page() {
   return (
     <div>
@@ -27,14 +42,20 @@ function Page() {
           <p>We provide high-quality moving services.</p>
         </div>
         <div className="hero-image">
-          <img src="https://media.istockphoto.com/id/1332288869/photo/packaging-the-box-two-young-movers-in-blue-uniform-working-indoors-in-the-room.jpg?s=612x612&w=0&k=20&c=13On1LO-7EoAF0x3wwmcG6wsADn2rIN45O0S3aklaxo=" alt="Moving Services" />
+          <img 
+            src="https://media.istockphoto.com/id/1332288869/photo/packaging-the-box-two-young-movers-in-blue-uniform-working-indoors-in-the-room.jpg?s=612x612&w=0&k=20&c=13On1LO-7EoAF0x3wwmcG6wsADn2rIN45O0S3aklaxo=" 
+            alt="Moving Services" 
+          />
         </div>
       </section>
 
       {/* Services Section */}
       <section id="services" className="services">
         <h2>Comprehensive Solutions for Every Move</h2>
-        <p className="services-text">Explore Our Range Of Expert Services To Customize Your Moving Experience. From Local to Long-distance We’ve Got You Covered.</p>
+        <p className="services-text">
+          Explore Our Range Of Expert Services To Customize Your Moving Experience. 
+          From Local to Long-distance We’ve Got You Covered.
+        </p>
         <div className="services-container">
           <div className="service-card">
             <FontAwesomeIcon icon={faTruck} className="icon" />
@@ -61,25 +82,20 @@ function Page() {
 
       {/* Why Choose Us Section */}
       <section id="why-choose-us" className="why-choose-us">
-        <h2>Why Choose Us</h2>
-        <div className="why-content">
-          <div className="why-item">
-            <h3>Your Trusted Moving Partner</h3>
-            <p>We value the trust you place in us to handle your move.</p>
+        <h2 className="why-title">//WHY CHOOSE US</h2>
+        {whyChooseUsData.map((item, index) => (
+          <div className={`why-section ${item.reverse ? 'reverse' : ''}`} key={index}>
+            <div className="why-content">
+              <div className="why-image">
+                <img src={item.imgSrc} alt="Moving Services" />
+              </div>
+              <div className="why-item">
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </div>
+            </div>
           </div>
-          <div className="why-image">
-            <img src="https://quickmover.ca/wp-content/uploads/2024/07/why-us-6.webp" alt="Moving Services" />
-          </div>
-        </div>
-        <div className="why-content why-reverse">
-          <div className="why-image">
-            <img src="https://thumbs.dreamstime.com/b/movers-carrying-sofa-outside-truck-street-full-length-young-male-77511013.jpg" alt="Moving Services" />
-          </div>
-          <div className="why-item">
-            <h3>Personalized Moving Solutions</h3>
-            <p>We offer customized moving services for your needs.</p>
-          </div>
-        </div>
+        ))}
       </section>
 
       {/* Footer */}
