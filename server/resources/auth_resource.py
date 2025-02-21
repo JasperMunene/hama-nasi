@@ -37,3 +37,28 @@ class SignupResource(Resource):
             "message": "User created successfully",
             "access_token": access_token
         }, 201
+
+class LoginResource(Resource):
+    def post(self):
+        # Validate required fields using reqparse
+        parser = reqparse.RequestParser()
+        parser.add_argument('email', type=str, required=True, help="Email is required!")
+        parser.add_argument('password', type=str, required=True, help="Password is required!")
+        args = parser.parse_args()
+
+        # Find the user by email
+        user = User.query.filter_by(email=args['email']).first()
+        if not user:
+            return {"message": "Invalid email or password"}, 401
+
+        # Verify the password
+        if not bcrypt.check_password_hash(user.password, args['password']):
+            return {"message": "Invalid email or password"}, 401
+
+        # Generate a JWT token for the user
+        access_token = create_access_token(identity=user.id)
+
+        return {
+            "message": "Login successful",
+            "access_token": access_token
+        }, 200
