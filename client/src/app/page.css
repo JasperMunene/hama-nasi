@@ -105,12 +105,12 @@ button {
 .service-card {
   background: #e0e0e0;
   width: 100%; /* Covering the entire grid cell */
-  height: 300px;
+  height: 220px;
   padding: 30px;
   border-radius: 5px;
   box-shadow: 0 4px 15px rgba(0, 0, 255, 0.692); /* Blue shadow effect */
   text-align: left;
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: afacad;
   display: flex;
   flex-direction: column;
