@@ -2,21 +2,21 @@ from flask import Flask
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
 from flask_cors import CORS
-from resources.auth_resource import SignupResource, LoginResource, LogoutResource
+from resources.auth_resource import SignupResource, LoginResource, LogoutResource, LoginGoogle, AuthorizeGoogle
 from flask_jwt_extended import JWTManager
-from extensions import bcrypt
+from extensions import bcrypt, oauth
 from models import db
-from extensions import oauth
 from dotenv import load_dotenv
 import os
 from blacklist import BLACKLIST
+from oauth_setup import google  # Import from the new module
 
 load_dotenv()
 
-
 app = Flask(__name__)
+app.secret_key = os.getenv("SECRET_KEY", "a_default_secret_key")
 
-# Initialize extensions
+# App Configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://hama:Lj8jwxkc15s2VFntKkYWVrlflV9EfJNY@dpg-cuqm5jrv2p9s73fgaif0-a.frankfurt-postgres.render.com/hama_b29f'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'secret'
@@ -24,15 +24,9 @@ app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 app.json.compact = False
 
+# Initialize extensions
 bcrypt.init_app(app)
 oauth.init_app(app)
-google = oauth.register(
-    name='google',
-    client_id = os.getenv('CLIENT_ID'),
-    client_secret = os.getenv('CLIENT_SECRET'),
-    server_metadata_url = 'https://accounts.google.com/.well-known/openid-configuration',
-    client_kwargs = {'scope': 'openid profile email'}
-)
 
 CORS(app)
 migrate = Migrate(app, db)
@@ -52,10 +46,13 @@ class Health(Resource):
     def get(self):
         return "Server is up and running"
 
+# Register endpoints, with an explicit endpoint name for the Google callback
 api.add_resource(SignupResource, '/auth/signup')
 api.add_resource(LoginResource, '/auth/login')
 api.add_resource(LogoutResource, '/auth/logout')
-api.add_resource( Health, '/')
+api.add_resource(LoginGoogle, '/auth/login/google')
+api.add_resource(AuthorizeGoogle, '/auth/authorize/google', endpoint='authorize_google')
+api.add_resource(Health, '/')
 
 if __name__ == '__main__':
     app.run()

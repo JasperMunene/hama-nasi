@@ -1,101 +1,194 @@
-import Image from "next/image";
+'use client'
 
-export default function Home() {
+import React, { useState } from 'react';
+
+const AuthTest = () => {
+  const [signupData, setSignupData] = useState({ name: '', email: '', password: '' });
+  const [loginData, setLoginData] = useState({ email: '', password: '' });
+  const [accessToken, setAccessToken] = useState('');
+
+  // Handle changes for signup form inputs
+  const handleSignupChange = (e) => {
+    const { name, value } = e.target;
+    setSignupData({ ...signupData, [name]: value });
+  };
+
+  // Handle changes for login form inputs
+  const handleLoginChange = (e) => {
+    const { name, value } = e.target;
+    setLoginData({ ...loginData, [name]: value });
+  };
+
+  // Signup API call
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch('http://127.0.0.1:5000/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(signupData)
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setAccessToken(data.access_token);
+        alert('Signup successful!');
+      } else {
+        alert(data.message || 'Signup failed');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error during signup');
+    }
+  };
+
+  // Login API call
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch('http://127.0.0.1:5000/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(loginData)
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setAccessToken(data.access_token);
+        alert('Login successful!');
+      } else {
+        alert(data.message || 'Login failed');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error during login');
+    }
+  };
+
+  // Logout API call
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch('http://127.0.0.1:5000/auth/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setAccessToken('');
+        alert('Logout successful!');
+      } else {
+        alert(data.message || 'Logout failed');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error during logout');
+    }
+  };
+
+  // Google OAuth login (redirects the browser to the OAuth flow)
+  const handleGoogleLogin = () => {
+    window.location.href = 'http://127.0.0.1:5000/auth/login/google';
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-white rounded shadow-lg p-6">
+        <h1 className="text-2xl font-bold mb-4 text-center">Auth Test</h1>
+        
+        {/* Signup Form */}
+        <form onSubmit={handleSignup} className="mb-6">
+          <h2 className="text-xl font-semibold mb-2">Signup</h2>
+          <input
+            type="text"
+            name="name"
+            value={signupData.name}
+            onChange={handleSignupChange}
+            placeholder="Name"
+            className="w-full p-2 mb-3 border rounded"
+            required
+          />
+          <input
+            type="email"
+            name="email"
+            value={signupData.email}
+            onChange={handleSignupChange}
+            placeholder="Email"
+            className="w-full p-2 mb-3 border rounded"
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            value={signupData.password}
+            onChange={handleSignupChange}
+            placeholder="Password"
+            className="w-full p-2 mb-3 border rounded"
+            required
+          />
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition-colors"
+          >
+            Signup
+          </button>
+        </form>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        {/* Login Form */}
+        <form onSubmit={handleLogin} className="mb-6">
+          <h2 className="text-xl font-semibold mb-2">Login</h2>
+          <input
+            type="email"
+            name="email"
+            value={loginData.email}
+            onChange={handleLoginChange}
+            placeholder="Email"
+            className="w-full p-2 mb-3 border rounded"
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            value={loginData.password}
+            onChange={handleLoginChange}
+            placeholder="Password"
+            className="w-full p-2 mb-3 border rounded"
+            required
+          />
+          <button
+            type="submit"
+            className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600 transition-colors"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            Login
+          </button>
+        </form>
+
+        {/* Logout Button */}
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold mb-2">Logout</h2>
+          <button
+            onClick={handleLogout}
+            className="w-full bg-red-500 text-white p-2 rounded hover:bg-red-600 transition-colors"
+            disabled={!accessToken}
           >
-            Read our docs
-          </a>
+            Logout
+          </button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {/* Google OAuth Login Button */}
+        <div>
+          <h2 className="text-xl font-semibold mb-2">Google OAuth Login</h2>
+          <button
+            onClick={handleGoogleLogin}
+            className="w-full bg-gray-800 text-white p-2 rounded hover:bg-gray-900 transition-colors"
+          >
+            Login with Google
+          </button>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default AuthTest;
