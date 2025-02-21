@@ -1,9 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { useState } from "react";
-import "./Signup.css";
 import Image from "next/image";
+import "./Signup.css";
 
 export default function Signup() {
     const [name, setName] = useState("");
@@ -23,18 +22,16 @@ export default function Signup() {
 
     const handleGoogleSignup = () => {
         alert("Google signup clicked! Implement OAuth here.");
-        // Redirect to Google OAuth or authentication logic
     };
 
     return (
         <div className="container">
             <div className="main-container">
-                
                 {/* Left: Signup Form */}
                 <div className="form-container">
-                    <h2>Sign Up</h2>
+                    <h2>Create an account</h2>
                     <form onSubmit={handleSignup}>
-                        <label>Name</label>
+                        <label>Full Name</label>
                         <input 
                             type="text" 
                             value={name} 
@@ -59,15 +56,12 @@ export default function Signup() {
                         />
 
                         <button type="submit">Sign Up</button>
-
-                        <p>
-                            Already have an account? <Link href="/login">Login</Link>
-                        </p>
                     </form>
 
                     {/* Google Signup Button */}
+                    <p>or signup with</p>
                     <button className="google-signup-btn" onClick={handleGoogleSignup}>
-                        <Image src="/google.png" alt="Google Icon" width={48} height={48} />
+                        <Image src="/google.png" alt="Google Icon" width={24} height={24} />
                     </button>
                 </div>
 
