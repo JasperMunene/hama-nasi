@@ -1,7 +1,8 @@
 from flask_restful import Resource, reqparse
 from models import db, User
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt
 from extensions import bcrypt
+from blacklist import BLACKLIST
 
 class SignupResource(Resource):
     def post(self):
@@ -31,7 +32,7 @@ class SignupResource(Resource):
         db.session.commit()
 
         # Generate a JWT token with the new user's id as the identity
-        access_token = create_access_token(identity=new_user.id)
+        access_token = create_access_token(identity=str(new_user.id))
 
         return {
             "message": "User created successfully",
@@ -56,9 +57,17 @@ class LoginResource(Resource):
             return {"message": "Invalid email or password"}, 401
 
         # Generate a JWT token for the user
-        access_token = create_access_token(identity=user.id)
+        access_token = create_access_token(identity=str(user.id))
 
         return {
             "message": "Login successful",
             "access_token": access_token
         }, 200
+
+class LogoutResource(Resource):
+    @jwt_required()
+    def post(self):
+        # Extract the token's unique identifier (jti)
+        jti = get_jwt()["jti"]
+        BLACKLIST.add(jti)
+        return {"message": "Successfully logged out"}, 200
