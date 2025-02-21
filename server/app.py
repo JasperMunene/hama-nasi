@@ -2,7 +2,7 @@ from flask import Flask
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
 from flask_cors import CORS
-from resources.auth_resource import SignupResource
+from resources.auth_resource import SignupResource, LoginResource
 from flask_jwt_extended import JWTManager
 from extensions import bcrypt  # Import from extensions
 from models import db
@@ -29,6 +29,7 @@ class Health(Resource):
         return "Server is up and running"
 
 api.add_resource(SignupResource, '/auth/signup')
+api.add_resource(LoginResource, '/auth/login')
 api.add_resource(Health, '/')
 
 if __name__ == '__main__':
