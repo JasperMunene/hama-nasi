@@ -3,6 +3,7 @@ from flask_restful import Api, Resource
 from flask_migrate import Migrate
 from flask_cors import CORS
 from resources.auth_resource import SignupResource, LoginResource, LogoutResource, LoginGoogle, AuthorizeGoogle
+from resources.user_resource import UserResource, SingleUser
 from flask_jwt_extended import JWTManager
 from extensions import bcrypt, oauth
 from models import db
@@ -46,12 +47,18 @@ class Health(Resource):
     def get(self):
         return "Server is up and running"
 
-# Register endpoints, with an explicit endpoint name for the Google callback
+# Auth routes
 api.add_resource(SignupResource, '/auth/signup')
 api.add_resource(LoginResource, '/auth/login')
 api.add_resource(LogoutResource, '/auth/logout')
 api.add_resource(LoginGoogle, '/auth/login/google')
 api.add_resource(AuthorizeGoogle, '/auth/authorize/google', endpoint='authorize_google')
+
+# User Routes
+api.add_resource(UserResource, '/users')
+api.add_resource(SingleUser, '/users/<id>')
+
+# Health Routes
 api.add_resource(Health, '/')
 
 if __name__ == '__main__':
