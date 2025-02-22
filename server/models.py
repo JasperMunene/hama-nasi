@@ -17,15 +17,15 @@ class User(db.Model, SerializerMixin):
     email = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=True)
     phone = db.Column(db.String(15))
-    address = db.Column(db.String(255))
-    role = db.Column(db.String(50), default='User')
+    location = db.Column(db.String(255))
+    role = db.Column(db.String(50), default='User', nullable=False)
+    mover_id = db.Column(db.Integer, db.ForeignKey('movers.id', ondelete="SET NULL"), nullable=True)
     created_at = db.Column(db.DateTime, default=db.func.now())
     updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
 
     # Relationships
     moves = db.relationship('Move', backref='user', lazy=True, cascade="all, delete-orphan")
     inventory_users = db.relationship('InventoryUser', backref='user', lazy=True, cascade="all, delete-orphan")
-    # Removed notifications relationship (Notification model not defined)
     reviews = db.relationship('Review', backref='user', lazy=True, cascade="all, delete-orphan")
     payments = db.relationship('Payment', backref='user', lazy=True, cascade="all, delete-orphan")
 
@@ -39,6 +39,7 @@ class Mover(db.Model, SerializerMixin):
     phone = db.Column(db.String(15), nullable=False)
     rating = db.Column(db.Float, default=0.0)
     availability_status = db.Column(db.String(50), default='Available')
+    house_type = db.Column(db.String(100), server_default='None', nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.now())
     updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
 
@@ -46,6 +47,7 @@ class Mover(db.Model, SerializerMixin):
     quotes = db.relationship('Quote', backref='mover', lazy=True, cascade="all, delete-orphan")
     bookings = db.relationship('Booking', backref='mover', lazy=True, cascade="all, delete-orphan")
     reviews = db.relationship('Review', backref='mover', lazy=True, cascade="all, delete-orphan")
+    users = db.relationship('User', backref='mover', lazy=True)
 
 # Properties Table
 class Property(db.Model, SerializerMixin):

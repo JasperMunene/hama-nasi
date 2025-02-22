@@ -17,7 +17,7 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "a_default_secret_key")
 
 # App Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://hama:Lj8jwxkc15s2VFntKkYWVrlflV9EfJNY@dpg-cuqm5jrv2p9s73fgaif0-a.frankfurt-postgres.render.com/hama_b29f'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://hama_nasi_wxap_user:TEaHmE0oRSyeJ1pxWdoWtFXOfGVrJbaZ@dpg-cusmagdumphs73c9a090-a.frankfurt-postgres.render.com/hama_nasi_wxap'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'secret'
 app.config['JWT_BLACKLIST_ENABLED'] = True

@@ -2,8 +2,9 @@ from app import app
 from models import db, User, Mover, Property, Inventory, InventoryUser, Move, Booking, Review, Payment, Quote
 from datetime import datetime, time, timezone
 
+
 def clear_tables():
-    # Clear dependent tables in the proper order
+    # Clear tables in proper order; note that with circular dependencies, deletion order is critical.
     db.session.query(Quote).delete()
     db.session.query(Booking).delete()
     db.session.query(Review).delete()
@@ -16,43 +17,75 @@ def clear_tables():
     db.session.query(User).delete()
     db.session.commit()
 
+
 def seed_users():
+    # Create normal users and company owner users.
     users = [
+        # Normal Users
         User(
             name='John Doe',
             email='johndoe@example.com',
             password='hashedpassword',
             phone='1234567890',
-            address='123 Main Street'
+            location='123 Main Street',
+            role='User'
         ),
         User(
             name='Jane Smith',
             email='janesmith@example.com',
             password='hashedpassword',
             phone='0987654321',
-            address='456 Elm St'
+            location='456 Elm St',
+            role='User'
+        ),
+        # Company Owners
+        User(
+            name='Speedy Owner',
+            email='speedyowner@example.com',
+            password='hashedpassword',
+            phone='5550001111',
+            location='789 Business Rd',
+            role='Company'
+        ),
+        User(
+            name='SafeHands Owner',
+            email='safehandsowner@example.com',
+            password='hashedpassword',
+            phone='5550002222',
+            location='101 Corporate Ave',
+            role='Company'
         )
     ]
     db.session.add_all(users)
     db.session.commit()
 
+
 def seed_movers():
-    movers = [
-        Mover(
-            company_name='Speedy Movers',
-            email='contact@speedymovers.com',
-            phone='5551234567',
-            rating=4.5
-        ),
-        Mover(
-            company_name='SafeHands Movers',
-            email='contact@safehands.com',
-            phone='5557654321',
-            rating=4.8
-        )
-    ]
-    db.session.add_all(movers)
+    speedy_owner = User.query.filter_by(email='speedyowner@example.com').first()
+    safehands_owner = User.query.filter_by(email='safehandsowner@example.com').first()
+
+    mover1 = Mover(
+        company_name='Speedy Movers',
+        email='contact@speedymovers.com',
+        phone='5551234567',
+        rating=4.5,
+        house_type='Residential'
+    )
+    mover2 = Mover(
+        company_name='SafeHands Movers',
+        email='contact@safehands.com',
+        phone='5557654321',
+        rating=4.8,
+        house_type='Commercial'
+    )
+    db.session.add_all([mover1, mover2])
     db.session.commit()
+
+    # Link each company owner to their mover record
+    speedy_owner.mover_id = mover1.id
+    safehands_owner.mover_id = mover2.id
+    db.session.commit()
+
 
 def seed_properties():
     properties = [
@@ -61,6 +94,7 @@ def seed_properties():
     ]
     db.session.add_all(properties)
     db.session.commit()
+
 
 def seed_inventory():
     # Retrieve properties from the database
@@ -74,13 +108,14 @@ def seed_inventory():
     db.session.add_all(inventory_items)
     db.session.commit()
 
+
 def seed_inventory_users():
     inventories = Inventory.query.order_by(Inventory.id).all()
     if len(inventories) < 2:
         print("Not enough inventory items found.")
         return
 
-    # Query users by their unique email addresses
+    # Only normal users receive inventory items.
     user1 = User.query.filter_by(email='johndoe@example.com').first()
     user2 = User.query.filter_by(email='janesmith@example.com').first()
 
@@ -95,8 +130,9 @@ def seed_inventory_users():
     db.session.add_all(inventory_users)
     db.session.commit()
 
+
 def seed_moves():
-    # Query the users to get their actual IDs
+    # Moves are associated with normal users.
     user1 = User.query.filter_by(email='johndoe@example.com').first()
     user2 = User.query.filter_by(email='janesmith@example.com').first()
 
@@ -123,8 +159,9 @@ def seed_moves():
     db.session.add_all(moves)
     db.session.commit()
 
+
 def seed_quotes():
-    # Query for moves and movers to ensure proper foreign key values
+    # Associate quotes with moves and movers.
     move1 = Move.query.filter_by(from_address='123 Main St').first()
     move2 = Move.query.filter_by(from_address='456 Elm St').first()
     mover1 = Mover.query.filter_by(company_name='Speedy Movers').first()
@@ -147,8 +184,9 @@ def seed_quotes():
     db.session.add_all(quotes)
     db.session.commit()
 
+
 def seed_bookings():
-    # Query for moves and movers
+    # Create bookings between moves and movers.
     move1 = Move.query.filter_by(from_address='123 Main St').first()
     move2 = Move.query.filter_by(from_address='456 Elm St').first()
     mover1 = Mover.query.filter_by(company_name='Speedy Movers').first()
@@ -169,8 +207,9 @@ def seed_bookings():
     db.session.add_all(bookings)
     db.session.commit()
 
+
 def seed_reviews():
-    # Query for users and movers
+    # Create reviews by normal users for movers.
     user1 = User.query.filter_by(email='johndoe@example.com').first()
     user2 = User.query.filter_by(email='janesmith@example.com').first()
     mover1 = Mover.query.filter_by(company_name='Speedy Movers').first()
@@ -193,8 +232,9 @@ def seed_reviews():
     db.session.add_all(reviews)
     db.session.commit()
 
+
 def seed_payments():
-    # Query for users and moves
+    # Create payments made by normal users for their moves.
     user1 = User.query.filter_by(email='johndoe@example.com').first()
     user2 = User.query.filter_by(email='janesmith@example.com').first()
     move1 = Move.query.filter_by(from_address='123 Main St').first()
@@ -219,6 +259,7 @@ def seed_payments():
     db.session.add_all(payments)
     db.session.commit()
 
+
 def seed_database():
     with app.app_context():
         clear_tables()
@@ -233,6 +274,7 @@ def seed_database():
         seed_reviews()
         seed_payments()
         print("Database seeding complete!")
+
 
 if __name__ == "__main__":
     seed_database()
