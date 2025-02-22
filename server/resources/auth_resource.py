@@ -4,7 +4,7 @@ from models import db, User
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt
 from extensions import bcrypt
 from blacklist import BLACKLIST
-from oauth_setup import google  # Import from the new module
+from oauth_setup import google
 
 # Signup Resource
 class SignupResource(Resource):
