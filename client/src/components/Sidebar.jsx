@@ -1,56 +1,56 @@
 "use client"
 
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarHeader,
-} from "@/components/ui/sidebar"
-
-import {
-  BarChart2,
-  Receipt,
-  Building2,
-  CreditCard,
-  Folder,
-  Wallet,
-  Users2,
-  Shield,
-  MessagesSquare,
-  Video,
-  Settings,
-  HelpCircle,
+  ReceiptText,
+  ListCheck,
+  Settings2,
   Menu,
-  Package, 
-  Home
+  Home,
+  ChevronRight,
+  Bell,
+  UserCircle
 } from "lucide-react"
-
 import Link from "next/link"
 import { useState } from "react"
-import Image from "next/image"
 import { Button } from "./ui/button"
+import { cn } from "@/lib/utils"
 
 export function AppSidebar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [activeItem, setActiveItem] = useState('home')
 
-  function handleNavigation() {
+  function handleNavigation(item) {
+    setActiveItem(item)
     setIsMobileMenuOpen(false)
   }
 
   function NavItem({
     href,
     icon: Icon,
+    id,
     children,
   }) {
+    const isActive = activeItem === id
+
     return (
       <Link
         href={href}
-        onClick={handleNavigation}
-        className="flex items-center px-3 py-2 text-sm rounded-md transition-colors text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-[#1F1F23]"
+        onClick={() => handleNavigation(id)}
+        className={cn(
+          "flex items-center px-4 py-3 text-sm rounded-lg transition-all group relative",
+          isActive 
+            ? "text-white bg-[#0000C7] shadow-md" 
+            : "text-gray-600 hover:bg-blue-50 hover:text-[#0000C7]"
+        )}
       >
-        <Icon className="h-4 w-4 mr-3 flex-shrink-0" />
-        {children}
+        <Icon className={cn(
+          "h-5 w-5 mr-3 flex-shrink-0 transition-colors",
+          isActive ? "text-white" : "text-gray-400 group-hover:text-blue-600"
+        )} />
+        <span className="font-medium text-lg">{children}</span>
+        {isActive && (
+          <ChevronRight className="h-5 w-5 ml-auto text-white" />
+        )}
       </Link>
     )
   }
@@ -59,46 +59,78 @@ export function AppSidebar() {
     <>
       <Button
         type="button"
-        className="lg:hidden fixed top-4 left-4 z-[70] p-2 rounded-lg bg-white dark:bg-[#0F0F12] shadow-md"
+        className="lg:hidden fixed top-4 left-4 z-[70] p-2 rounded-lg bg-white shadow-lg"
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       >
-        <Menu className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+        <Menu className="h-5 w-5 text-gray-700" />
       </Button>
+      
       <nav
-        className={`
-        fixed inset-y-0 left-0 z-[70] w-64 bg-white dark:bg-[#0F0F12] transform transition-transform duration-200 ease-in-out
-        lg:translate-x-0 lg:static lg:w-64 border-r border-gray-200 dark:border-[#1F1F23]
-        ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
-    `}
+        className={cn(
+          "fixed inset-y-0 left-0 z-[70] w-72 bg-white transform transition-transform duration-200 ease-in-out",
+          "lg:translate-x-0 lg:static lg:w-72 border-r border-gray-100 shadow-sm",
+          isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+        )}
       >
         <div className="h-full flex flex-col">
-        <Link
-            href="/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="h-16 px-6 flex items-center border-b border-gray-200 dark:border-[#1F1F23]"
-          >
-            <div className="flex items-center gap-3">
-              <Image
-                src="/logo-black.png"
-                alt="Acme"
-                width={32}
-                height={32}
-                className="flex-shrink-0 hidden dark:block"
-              />
-              <Image
-                src="/logo-black.png"
-                alt="Acme"
-                width={32}
-                height={32}
-                className="flex-shrink-0 block dark:hidden"
-              />
-              <span className="text-2xl font-semibold hover:cursor-pointer text-gray-900 dark:text-white">
+          {/* Header */}
+          <div className="h-16 px-6 flex items-center justify-between border-b border-gray-100">
+            <Link href="/" className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-[#0000C7] flex items-center justify-center">
+                <span className="text-lg font-bold text-white">H</span>
+              </div>
+              <span className="text-xl font-semibold text-gray-900">
                 Hama Nasi
               </span>
+            </Link>
+          </div>
+
+          {/* Main Navigation */}
+          <div className="flex-1 overflow-y-auto p-4">
+            <div className="space-y-8">
+              <div>
+                <div className="px-4 mb-3">
+                  <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                    Main Menu
+                  </h2>
+                </div>
+                <div className="space-y-1">
+                  <NavItem href="/" icon={Home} id="home">
+                    Home
+                  </NavItem>
+                  <NavItem href="/book-move" icon={ReceiptText} id="book">
+                    Book a Move
+                  </NavItem>
+                  <NavItem href="/inventory" icon={ListCheck} id="inventory">
+                    Inventory
+                  </NavItem>
+                  <NavItem href="/settings" icon={Settings2} id="settings">
+                    Settings
+                  </NavItem>
+                </div>
+              </div>
             </div>
-          </Link>
-          
+          </div>
+
+          {/* User Profile */}
+          <div className="p-4 border-t border-gray-100">
+            <div className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                <UserCircle className="w-5 h-5 text-[#0000C7]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-900 truncate">
+                  John Smith
+                </p>
+                <p className="text-xs text-gray-500 truncate">
+                  john@example.com
+                </p>
+              </div>
+              <Button variant="ghost" size="icon" className="ml-auto">
+                <Bell className="h-4 w-4 text-gray-400" />
+              </Button>
+            </div>
+          </div>
         </div>
       </nav>
     </>
