@@ -3,7 +3,7 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #b3bdc7e1;
+  background-color: #e7e9fc;
 }
 
 /* Navbar */
@@ -11,7 +11,7 @@ body {
   display: flex;
   justify-content: space-between;
   padding: 15px 50px;
-  background-color: #002244;
+  background-color: #0000C7;
   color: white;
   align-items: center;
   gap: 2.5rem; /* Adjust for equal spacing */
@@ -57,7 +57,7 @@ button {
   align-items: center;
   justify-content: space-between;
   padding: 50px;
-  background-color: #B3BDC7;
+  background-color: #e7e9fc;
   text-align: left;
 }
 
@@ -197,7 +197,7 @@ button {
   justify-content: space-between;
   align-items: center;
   padding: 40px 50px;
-  background-color: #002244;
+  background-color: #0000C7;
   color: white;
 }
 

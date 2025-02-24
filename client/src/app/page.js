@@ -8,7 +8,7 @@ const whyChooseUsData = [
   {
     title: "Your Trusted Moving Partner",
     description: "At Hama Nasi, it’s about the trust you place in a moving partner to handle a pivotal moment in your life.",
-    imgSrc: "https://quickmover.ca/wp-content/uploads/2024/07/why-us-6.webp",
+    imgSrc: "https://media.istockphoto.com/id/622277572/photo/happy-delivery-men-carrying-cardboard-box-and-carpet.jpg?s=612x612&w=0&k=20&c=JfJCWaBSo8X0vHwO79Vdx4k9Oh7FytjiAaesFC21CzY=",
     reverse: false,
   },
   {
@@ -38,7 +38,7 @@ function Page() {
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-text">
-          <h1>YourLocal Moving Experts</h1>
+          <h1>Your Local Moving Experts</h1>
           <p>We provide high-quality moving services.</p>
         </div>
         <div className="hero-image">
@@ -82,7 +82,7 @@ function Page() {
 
       {/* Why Choose Us Section */}
       <section id="why-choose-us" className="why-choose-us">
-        <h2 className="why-title">//WHY CHOOSE US</h2>
+        <h2 className="why-title">WHY CHOOSE US</h2>
         {whyChooseUsData.map((item, index) => (
           <div className={`why-section ${item.reverse ? 'reverse' : ''}`} key={index}>
             <div className="why-content">
@@ -122,7 +122,7 @@ function Page() {
         </div>
       </footer>
     </div>
-  );
+  )
 }
 
 export default Page;
