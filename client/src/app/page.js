@@ -1,101 +1,128 @@
-import Image from "next/image";
+import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTruck, faBox, faWarehouse, faTools } from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
+import "./page.css";
 
-export default function Home() {
+const whyChooseUsData = [
+  {
+    title: "Your Trusted Moving Partner",
+    description: "At Hama Nasi, it’s about the trust you place in a moving partner to handle a pivotal moment in your life.",
+    imgSrc: "https://quickmover.ca/wp-content/uploads/2024/07/why-us-6.webp",
+    reverse: false,
+  },
+  {
+    title: "Beyond Moving-Crafting Your Perfect Move",
+    description: "Discover a moving experience like no other at Hama Nasi. We go beyond merely transporting items; we craft a personalized moving solution tailored to your needs.",
+    imgSrc: "https://thumbs.dreamstime.com/b/movers-carrying-sofa-outside-truck-street-full-length-young-male-77511013.jpg",
+    reverse: true,
+  }
+];
+
+function Page() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div>
+      {/* Navbar */}
+      <nav className="navbar">
+        <div className="logo">HAMA NASI</div>
+        <ul className="nav-links">
+          <li><a href="#services">Services</a></li>
+          <li><a href="#why-choose-us">Why Choose Us</a></li>
+        </ul>
+        <div className="auth-buttons">
+          <Link href="/signup"><button className="signup">Sign Up</button></Link>
+          <Link href="/login"><button className="login">Login</button></Link>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+      </nav>
+
+      {/* Hero Section */}
+      <section className="hero">
+        <div className="hero-text">
+          <h1>YourLocal Moving Experts</h1>
+          <p>We provide high-quality moving services.</p>
+        </div>
+        <div className="hero-image">
+          <img 
+            src="https://media.istockphoto.com/id/1332288869/photo/packaging-the-box-two-young-movers-in-blue-uniform-working-indoors-in-the-room.jpg?s=612x612&w=0&k=20&c=13On1LO-7EoAF0x3wwmcG6wsADn2rIN45O0S3aklaxo=" 
+            alt="Moving Services" 
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section id="services" className="services">
+        <h2>Comprehensive Solutions for Every Move</h2>
+        <p className="services-text">
+          Explore Our Range Of Expert Services To Customize Your Moving Experience. 
+          From Local to Long-distance We’ve Got You Covered.
+        </p>
+        <div className="services-container">
+          <div className="service-card">
+            <FontAwesomeIcon icon={faTruck} className="icon" />
+            <h3>Long-Distance Moving</h3>
+            <p>Moving to a different city? We've got you covered.</p>
+          </div>
+          <div className="service-card">
+            <FontAwesomeIcon icon={faBox} className="icon" />
+            <h3>Packing & Unpacking</h3>
+            <p>Take the stress out of moving with our expert packing services.</p>
+          </div>
+          <div className="service-card">
+            <FontAwesomeIcon icon={faWarehouse} className="icon" />
+            <h3>Secure Storage Services</h3>
+            <p>Our storage facilities are safe and secure for your belongings.</p>
+          </div>
+          <div className="service-card">
+            <FontAwesomeIcon icon={faTools} className="icon" />
+            <h3>Furniture Assembly</h3>
+            <p>We help with disassembling and reassembling your furniture.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us Section */}
+      <section id="why-choose-us" className="why-choose-us">
+        <h2 className="why-title">//WHY CHOOSE US</h2>
+        {whyChooseUsData.map((item, index) => (
+          <div className={`why-section ${item.reverse ? 'reverse' : ''}`} key={index}>
+            <div className="why-content">
+              <div className="why-image">
+                <img src={item.imgSrc} alt="Moving Services" />
+              </div>
+              <div className="why-item">
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </section>
+
+      {/* Footer */}
+      <footer className="footer">
+        <div className="footer-content">
+          <div className="footer-section">
+            <h3>HAMA NASI</h3>
+            <p>Your trusted moving partner</p>
+          </div>
+          <div className="footer-section">
+            <h4>Services</h4>
+            <ul>
+              <li>Residential Moving</li>
+              <li>Long-distance Moving</li>
+              <li>Packing & Unpacking</li>
+            </ul>
+          </div>
+          <div className="footer-section">
+            <h4>Contact Us</h4>
+            <p>Email: <a href="mailto:hamdi.yusuf@student.moringaschool.com">hamdi.yusuf@student.moringaschool.com</a></p>
+            <p>Email: <a href="mailto:jose.barasa@student.moringaschool.com">jose.barasa@student.moringaschool.com</a></p>
+            <p>Email: <a href="mailto:jasper.munene@student.moringaschool.com">jasper.munene@student.moringaschool.com</a></p>
+          </div>
+        </div>
       </footer>
     </div>
   );
 }
+
+export default Page;
