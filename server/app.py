@@ -10,7 +10,7 @@ from models import db
 from dotenv import load_dotenv
 import os
 from blacklist import BLACKLIST
-from oauth_setup import google  # Import from the new module
+from oauth_setup import google  
 
 load_dotenv()
 
