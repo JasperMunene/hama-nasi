@@ -95,13 +95,13 @@ export function AppSidebar() {
                   </h2>
                 </div>
                 <div className="space-y-1">
-                  <NavItem href="/" icon={Home} id="home">
+                  <NavItem href="/dashboard" icon={Home} id="home">
                     Home
                   </NavItem>
-                  <NavItem href="/book-move" icon={ReceiptText} id="book">
+                  <NavItem href="/dashboard/book-move" icon={ReceiptText} id="book">
                     Book a Move
                   </NavItem>
-                  <NavItem href="/inventory" icon={ListCheck} id="inventory">
+                  <NavItem href="/dashboard/inventory" icon={ListCheck} id="inventory">
                     Inventory
                   </NavItem>
                   <NavItem href="/settings" icon={Settings2} id="settings">
