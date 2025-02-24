@@ -7,12 +7,9 @@ export default async function RootLayout({ children }) {
     const defaultOpen = cookieStore.get("sidebar_state")?.value === "true"
 
     return (
-        <SidebarProvider defaultOpen={defaultOpen}>
-          <AppSidebar />
-          <main>
-            <SidebarTrigger />
-            {children}
-          </main>
-        </SidebarProvider>
+       <div className="flex h-screen">
+        <AppSidebar />
+        <main className="flex-1 overflow-auto p-6 bg-white dark:bg-[#0F0F12]">{children}</main>
+       </div>
     )
 }
