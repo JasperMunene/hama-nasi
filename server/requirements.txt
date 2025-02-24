@@ -48,3 +48,5 @@ typing_extensions==4.12.2
 wcwidth==0.2.13
 Werkzeug==2.2.2
 zipp==3.21.0
+Flask-JWT-Extended~=4.7.1
+Flask-Bcrypt~=1.0.1

@@ -122,7 +122,7 @@ function Page() {
         </div>
       </footer>
     </div>
-  );
+  )
 }
 
 export default Page;
