@@ -56,7 +56,7 @@ api.add_resource(AuthorizeGoogle, '/auth/authorize/google', endpoint='authorize_
 
 # User Routes
 api.add_resource(UserResource, '/users')
-api.add_resource(SingleUser, '/users/<id>')
+api.add_resource(SingleUser, '/user')
 
 # Health Routes
 api.add_resource(Health, '/')
