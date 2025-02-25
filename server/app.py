@@ -4,6 +4,7 @@ from flask_migrate import Migrate
 from flask_cors import CORS
 from resources.auth_resource import SignupResource, LoginResource, LogoutResource, LoginGoogle, AuthorizeGoogle
 from resources.user_resource import UserResource, SingleUser
+from resources.mover_resource import MoverResource, SingleMover
 from flask_jwt_extended import JWTManager
 from extensions import bcrypt, oauth
 from models import db
@@ -56,7 +57,11 @@ api.add_resource(AuthorizeGoogle, '/auth/authorize/google', endpoint='authorize_
 
 # User Routes
 api.add_resource(UserResource, '/users')
-api.add_resource(SingleUser, '/users/<id>')
+api.add_resource(SingleUser, '/user')
+
+#Mover Routes
+api.add_resource(MoverResource, '/movers')
+api.add_resource(SingleMover, '/mover')
 
 # Health Routes
 api.add_resource(Health, '/')

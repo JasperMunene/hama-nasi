@@ -16,7 +16,7 @@ class SignupResource(Resource):
         args = parser.parse_args()
 
         if User.query.filter_by(email=args['email']).first():
-            return {"message": "User with that email already exists"}, 400
+            return {"message": "User with that email already exists"},400
 
         hashed_password = bcrypt.generate_password_hash(args['password']).decode('utf-8')
         new_user = User(
