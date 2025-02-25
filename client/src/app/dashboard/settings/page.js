@@ -5,12 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function Settings() {
   const [settings, setSettings] = useState({
     notifications: true,
     theme: "light",
     language: "English",
+    privacy: "Public",
+    password: "",
+    bio: "",
   });
 
   const toggleNotification = () => {
@@ -46,6 +50,24 @@ export default function Settings() {
                 <SelectItem value="French">French</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Privacy</label>
+            <Select onValueChange={(value) => setSettings({ ...settings, privacy: value })}>
+              <SelectTrigger className="border rounded-lg p-2 w-full">{settings.privacy}</SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Public">Public</SelectItem>
+                <SelectItem value="Private">Private</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Change Password</label>
+            <Input type="password" className="border rounded-lg p-2 w-full" placeholder="New Password" value={settings.password} onChange={(e) => setSettings({ ...settings, password: e.target.value })} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Bio</label>
+            <Textarea className="border rounded-lg p-2 w-full" placeholder="Tell us about yourself" value={settings.bio} onChange={(e) => setSettings({ ...settings, bio: e.target.value })} />
           </div>
           <Button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 w-full">
             Save Settings
