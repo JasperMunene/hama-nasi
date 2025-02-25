@@ -21,7 +21,7 @@ export default function BookMove() {
             <TabsTrigger className="px-4 py-2 text-gray-700 hover:text-blue-500" value="track-move">Track Move</TabsTrigger>
           </TabsList>
 
-          {/* Quotes Section */}
+          
           <TabsContent value="quotes">
             <CardContent>
               <h2 className="text-xl font-semibold mb-3">Request a Quote</h2>
@@ -35,7 +35,7 @@ export default function BookMove() {
             </CardContent>
           </TabsContent>
 
-          {/* Move History Section */}
+        
           <TabsContent value="move-history">
             <CardContent>
               <h2 className="text-xl font-semibold mb-3">Move History</h2>
@@ -60,7 +60,7 @@ export default function BookMove() {
             </CardContent>
           </TabsContent>
 
-          {/* Track Move Section */}
+          
           <TabsContent value="track-move">
             <CardContent>
               <h2 className="text-xl font-semibold mb-3">Track Your Move</h2>
