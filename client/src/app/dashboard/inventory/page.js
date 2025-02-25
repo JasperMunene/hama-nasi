@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
 
 export default function Inventory() {
   const [items, setItems] = useState([
@@ -36,18 +37,23 @@ export default function Inventory() {
             value={newItem.name}
             onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
           />
-          <Input
-            className="border rounded-lg p-2"
-            placeholder="Category"
-            value={newItem.category}
-            onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
-          />
-          <Input
-            className="border rounded-lg p-2"
-            placeholder="Condition"
-            value={newItem.condition}
-            onChange={(e) => setNewItem({ ...newItem, condition: e.target.value })}
-          />
+          <Select onValueChange={(value) => setNewItem({ ...newItem, category: value })}>
+            <SelectTrigger className="border rounded-lg p-2 w-40">{newItem.category || "Select Category"}</SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Furniture">Furniture</SelectItem>
+              <SelectItem value="Appliances">Appliances</SelectItem>
+              <SelectItem value="Electronics">Electronics</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select onValueChange={(value) => setNewItem({ ...newItem, condition: value })}>
+            <SelectTrigger className="border rounded-lg p-2 w-40">{newItem.condition || "Select Condition"}</SelectTrigger>
+            <SelectContent>
+              <SelectItem value="New">New</SelectItem>
+              <SelectItem value="Used">Used</SelectItem>
+              <SelectItem value="Fragile">Fragile</SelectItem>
+              <SelectItem value="Bulk">Bulk</SelectItem>
+            </SelectContent>
+          </Select>
           <Button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600" onClick={addItem}>
             Add Item
           </Button>
