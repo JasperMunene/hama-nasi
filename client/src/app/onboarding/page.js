@@ -74,7 +74,7 @@ const onboarding = () => {
 
       <div className="w-1/2 flex items-center justify-center">
         <Image 
-          src="/courier-delivered-boxes-businessman.png" 
+          src="/6333.jpg" 
           alt="Ongeza"
           width={400} 
           height={500} 
