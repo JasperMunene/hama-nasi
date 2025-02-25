@@ -72,3 +72,4 @@ class SingleUser(Resource):
         except Exception as e:
             current_app.logger.error(f"Error updating user with id {user_id}: {str(e)}")
             return {"message": "Internal server error"}, 500
+

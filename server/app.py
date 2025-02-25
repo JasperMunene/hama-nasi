@@ -5,7 +5,7 @@ from flask_cors import CORS
 from resources.auth_resource import SignupResource, LoginResource, LogoutResource, LoginGoogle, AuthorizeGoogle
 from resources.user_resource import UserResource, SingleUser
 from resources.mover_resource import MoverResource, SingleMover
-from resources.inventory_resource import InventoryResource
+from resources.inventory_resource import InventoryResource, UserInventory
 from resources.property_resource import PropertyResource
 from flask_jwt_extended import JWTManager
 from extensions import bcrypt, oauth
@@ -67,6 +67,7 @@ api.add_resource(SingleMover, '/mover')
 
 #Inventory Route
 api.add_resource(InventoryResource, '/inventory')
+api.add_resource(UserInventory, '/user/inventory')
 
 # Property Resource
 api.add_resource(PropertyResource, '/properties')
