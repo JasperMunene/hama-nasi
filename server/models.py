@@ -20,6 +20,7 @@ class User(db.Model, SerializerMixin):
     location = db.Column(db.String(255))
     role = db.Column(db.String(50), default='User', nullable=False)
     mover_id = db.Column(db.Integer, db.ForeignKey('movers.id', ondelete="SET NULL"), nullable=True)
+    house_type = db.Column(db.String(100), server_default='None', nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.now())
     updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
 

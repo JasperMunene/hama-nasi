@@ -44,6 +44,7 @@ class SingleUser(Resource):
         parser.add_argument('phone', type=str)
         parser.add_argument('location', type=str)
         parser.add_argument('role', type=str)
+        parser.add_argument('mover_id', type=str)
         args = parser.parse_args()
 
         try:
@@ -62,6 +63,8 @@ class SingleUser(Resource):
                 user.location = args['location']
             if args.get('role') is not None:
                 user.role = args['role']
+            if args.get('mover_id') is not None:
+                user.mover_id = args['mover_id']
 
             db.session.commit()
 
