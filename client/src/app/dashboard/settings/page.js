@@ -15,6 +15,7 @@ export default function Settings() {
     privacy: "Public",
     password: "",
     bio: "",
+    paymentMethod: "Credit Card",
   });
 
   const toggleNotification = () => {
@@ -68,6 +69,17 @@ export default function Settings() {
           <div>
             <label className="block text-sm font-medium">Bio</label>
             <Textarea className="border rounded-lg p-2 w-full" placeholder="Tell us about yourself" value={settings.bio} onChange={(e) => setSettings({ ...settings, bio: e.target.value })} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Payment Method</label>
+            <Select onValueChange={(value) => setSettings({ ...settings, paymentMethod: value })}>
+              <SelectTrigger className="border rounded-lg p-2 w-full">{settings.paymentMethod}</SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Credit Card">Credit Card</SelectItem>
+                <SelectItem value="PayPal">PayPal</SelectItem>
+                <SelectItem value="Mpesa">Mpesa</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <Button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 w-full">
             Save Settings

@@ -104,7 +104,7 @@ export function AppSidebar() {
                   <NavItem href="/dashboard/inventory" icon={ListCheck} id="inventory">
                     Inventory
                   </NavItem>
-                  <NavItem href="/settings" icon={Settings2} id="settings">
+                  <NavItem href="/dashboard/settings" icon={Settings2} id="settings">
                     Settings
                   </NavItem>
                 </div>
