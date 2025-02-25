@@ -1,7 +1,7 @@
 from flask import current_app
 from flask_restful import Resource
 from models import db, Inventory
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 class InventoryResource(Resource):
     @jwt_required()
@@ -18,3 +18,8 @@ class InventoryResource(Resource):
         except Exception as e:
             current_app.logger.error(f"Error fetching inventory: {str(e)}")
             return {"message": "Internal server error"}, 500
+
+class UserInventory:
+    @jwt_required()
+    def post(self):
+        pass
