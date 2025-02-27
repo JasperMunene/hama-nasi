@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-export default function HomePage() {
+export default function dashboard() {
   const [selectedDate, setSelectedDate] = useState(3);
   const inventoryItems = [
     { item: 'Bed', category: 'Furniture', condition: 'New' },

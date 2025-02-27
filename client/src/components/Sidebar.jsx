@@ -85,7 +85,7 @@ export function AppSidebar() {
             </Link>
           </div>
 
-          {/* Main Navigation */}
+          
           <div className="flex-1 overflow-y-auto p-4">
             <div className="space-y-8">
               <div>
@@ -112,7 +112,7 @@ export function AppSidebar() {
             </div>
           </div>
 
-          {/* User Profile */}
+         
           <div className="p-4 border-t border-gray-100">
             <div className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
               <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
