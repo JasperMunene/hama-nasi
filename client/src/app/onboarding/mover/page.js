@@ -58,17 +58,17 @@ const Mover = () => {
 
         <button
           onClick={handleContinue}
-          className="w-40 py-2 text-md font-semibold bg-[#7D97F4] text-white rounded-lg transition-all duration-300 hover:bg-[#637BCC] active:bg-[#4E61A5] flex items-center justify-center gap-2"
+          className="w-50 py-2 text-md font-semibold bg-[#7D97F4] text-white rounded-lg transition-all duration-300 hover:bg-[#637BCC] active:bg-[#4E61A5] flex items-center justify-center gap-2"
         >
           Continue →
         </button>
       </div>
       
-      <div className="w-[40%] flex items-center justify-center">
+      <div className="w-[50%] flex items-center justify-center">
         <Image 
           src="/6333.jpg" 
           alt="Moving Illustration"
-          width={350} 
+          width={550} 
           height={450} 
           className="object-contain"
         />
