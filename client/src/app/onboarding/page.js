@@ -41,9 +41,9 @@ const onboarding = () => {
 
         <div className="flex gap-6">
           <button
-            className={`w-44 h-44 flex flex-col items-center justify-center rounded-lg transition ${
-              selectedOption === 'Mover' ? 'bg-[#4548ED] text-white' : 'bg-[#4548ED] text-[#FFFFFF]'
-            }`}
+            className={`w-44 h-44 flex flex-col items-center justify-center rounded-lg transition-all duration-300 shadow-md ${
+              selectedOption === 'Mover' ? 'bg-[#2E33D1] text-white' : 'bg-[#4548ED] text-white'
+            } hover:bg-[#2A2FB5] active:bg-[#1F2490]`}
             onClick={() => handleSelect('Mover')}
           >
             <FaBox className="text-white text-6xl stroke-[7] fill-none" />
@@ -51,19 +51,19 @@ const onboarding = () => {
           </button>
 
           <button
-            className={`w-44 h-44 flex flex-col items-center justify-center rounded-lg transition ${
-              selectedOption === 'Moving Company' ? 'bg-[#4548ED] text-white' : 'bg-[#4548ED] text-[#FFFFFF]'
-            }`}
+            className={`w-44 h-44 flex flex-col items-center justify-center rounded-lg transition-all duration-300 shadow-md ${
+              selectedOption === 'Moving Company' ? 'bg-[#2E33D1] text-white' : 'bg-[#4548ED] text-white'
+            } hover:bg-[#2A2FB5] active:bg-[#1F2490]`}
             onClick={() => handleSelect('Moving Company')}
           >
-            <PiTruckThin className="text-5xl  mb-2" />
+            <PiTruckThin className="text-5xl mb-2" />
             <span className="text-lg font-semibold">Moving Company</span>
           </button>
         </div>
 
         <button
-          className={`mt-10 w-72 py-4 rounded-lg text-lg font-semibold transition ${
-            selectedOption ? 'bg-[#7D97F4] text-white' : 'bg-[#7D97F4] text-gray-500 cursor-not-allowed'
+          className={`mt-10 w-72 py-4 rounded-lg text-lg font-semibold transition-all duration-300 shadow-md ${
+            selectedOption ? 'bg-[#7D97F4] text-white hover:bg-[#637BCC] active:bg-[#284dd1]' : 'bg-[#7D97F4] text-gray-500 cursor-not-allowed'
           }`}
           onClick={handleContinue}
           disabled={!selectedOption}
@@ -75,7 +75,7 @@ const onboarding = () => {
       <div className="w-1/2 flex items-center justify-center">
         <Image 
           src="/6333.jpg" 
-          alt="Ongeza"
+          alt="Onboarding Illustration"
           width={400} 
           height={500} 
           className="object-contain"
@@ -85,5 +85,6 @@ const onboarding = () => {
   );
 };
 
-export default onboarding;
+export default  onboarding;
+
 
