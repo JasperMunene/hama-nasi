@@ -6,9 +6,10 @@ import { FaBox } from 'react-icons/fa';
 import { PiTruckThin } from 'react-icons/pi';
 import Image from 'next/image';
 
-const onboarding = () => {
+const Onboarding = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [progress, setProgress] = useState(15);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleSelect = (option) => {
@@ -17,6 +18,8 @@ const onboarding = () => {
   };
 
   const handleContinue = () => {
+    if (!selectedOption) return;
+    setLoading(true);
     setProgress(50);
     setTimeout(() => {
       if (selectedOption === 'Mover') {
@@ -24,67 +27,79 @@ const onboarding = () => {
       } else if (selectedOption === 'Moving Company') {
         router.push('/onboarding/company');
       }
-    }, 500);
+    }, 1000);
   };
 
   return (
-    <div className="flex h-screen w-screen bg-[#ECEDFD]">
-      <div className="flex flex-col justify-center px-24 w-1/2">
-        <h1 className="text-4xl font-bold mb-6">Hama Nasi</h1>
-        <div className="w-48 h-2 bg-gray-300 rounded-full overflow-hidden mb-8">
+    <div className="flex h-screen w-screen bg-[#F3F4FF] items-center justify-center px-24 py-12">
+      {/* Left Section */}
+      <div className="flex flex-col justify-center w-1/2 space-y-8">
+        <h1 className="text-5xl font-semibold text-[#1E1E1E]">Hama Nasi</h1>
+
+        {/* Progress Bar */}
+        <div className="w-40 h-2 bg-gray-300 rounded-full overflow-hidden">
           <div 
-            className="h-full bg-[#4548ED] transition-all duration-300" 
+            className="h-full bg-[#4548ED] rounded-full transition-all duration-500 ease-in-out" 
             style={{ width: `${progress}%` }}
           ></div>
         </div>
-        <h2 className="text-2xl font-semibold mb-8">How do you want to use Hama Nasi?</h2>
+        <p className="text-gray-600 text-lg">Step 1 of 2</p>
 
-        <div className="flex gap-6">
+        <h2 className="text-2xl font-medium text-[#1E1E1E]">How do you want to use Hama Nasi?</h2>
+        
+        {/* Selection Buttons */}
+        <div className="flex gap-10">
           <button
-            className={`w-44 h-44 flex flex-col items-center justify-center rounded-lg transition-all duration-300 shadow-md ${
-              selectedOption === 'Mover' ? 'bg-[#2E33D1] text-white' : 'bg-[#4548ED] text-white'
-            } hover:bg-[#2A2FB5] active:bg-[#1F2490]`}
+            className={`w-56 h-56 flex flex-col items-center justify-center rounded-3xl border transition-all duration-300 text-white text-lg ${
+              selectedOption === 'Mover' ? 'bg-[#001AFF]' : 'bg-[#1E40AF]'
+            } hover:bg-[#0010CC] hover:shadow-xl border-transparent`}
             onClick={() => handleSelect('Mover')}
           >
-            <FaBox className="text-white text-6xl stroke-[7] fill-none" />
-            <span className="text-lg font-semibold">Mover</span>
+            <FaBox className="text-white text-7xl mb-4" />
+            <span className="font-medium">Mover</span>
           </button>
-
+          
           <button
-            className={`w-44 h-44 flex flex-col items-center justify-center rounded-lg transition-all duration-300 shadow-md ${
-              selectedOption === 'Moving Company' ? 'bg-[#2E33D1] text-white' : 'bg-[#4548ED] text-white'
-            } hover:bg-[#2A2FB5] active:bg-[#1F2490]`}
+            className={`w-56 h-56 flex flex-col items-center justify-center rounded-3xl border transition-all duration-300 text-white text-lg ${
+              selectedOption === 'Moving Company' ? 'bg-[#001AFF]' : 'bg-[#1E40AF]'
+            } hover:bg-[#0010CC] hover:shadow-xl border-transparent`}
             onClick={() => handleSelect('Moving Company')}
           >
-            <PiTruckThin className="text-5xl mb-2" />
-            <span className="text-lg font-semibold">Moving Company</span>
+            <PiTruckThin className="text-white text-7xl mb-4" />
+            <span className="font-medium">Moving Company</span>
           </button>
         </div>
 
+        {/* Continue Button */}
         <button
-          className={`mt-10 w-72 py-4 rounded-lg text-lg font-semibold transition-all duration-300 shadow-md ${
-            selectedOption ? 'bg-[#7D97F4] text-white hover:bg-[#637BCC] active:bg-[#284dd1]' : 'bg-[#7D97F4] text-gray-500 cursor-not-allowed'
+          className={`mt-8 w-56 py-4 rounded-xl text-lg font-medium transition-all duration-300 flex items-center justify-center ${
+            selectedOption 
+              ? 'bg-[#001AFF] text-white hover:bg-[#0010CC] hover:shadow-lg' 
+              : 'bg-[#9FB3FF] text-gray-500 opacity-80 cursor-not-allowed'
           }`}
           onClick={handleContinue}
-          disabled={!selectedOption}
+          disabled={!selectedOption || loading}
         >
-          Continue →
+          {loading ? (
+            <span className="animate-spin border-4 border-white border-t-transparent w-6 h-6 rounded-full"></span>
+          ) : (
+            "Continue →"
+          )}
         </button>
       </div>
 
+      {/* Right Section - Image */}
       <div className="w-1/2 flex items-center justify-center">
         <Image 
           src="/6333.jpg" 
           alt="Onboarding Illustration"
-          width={400} 
-          height={500} 
-          className="object-contain"
+          width={600} 
+          height={600} 
+          className="object-contain max-w-[550px]"
         />
       </div>
     </div>
   );
 };
 
-export default  onboarding;
-
-
+export default Onboarding;
