@@ -19,7 +19,4 @@ class InventoryResource(Resource):
             current_app.logger.error(f"Error fetching inventory: {str(e)}")
             return {"message": "Internal server error"}, 500
 
-class UserInventory:
-    @jwt_required()
-    def post(self):
-        pass
+

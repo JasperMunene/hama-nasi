@@ -12,7 +12,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
-import { Button } from "./ui/button"
+import Button from "@/components/elements/button/Button";
 import { cn } from "@/lib/utils"
 
 export function AppSidebar() {
