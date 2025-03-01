@@ -6,6 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { FaCreditCard, FaPaypal } from "react-icons/fa6";  
+import { MdMobileFriendly } from "react-icons/md";      
+
 
 export default function Settings() {
   const [settings, setSettings] = useState({
@@ -71,15 +74,26 @@ export default function Settings() {
             <Textarea className="border rounded-lg p-2 w-full" placeholder="Tell us about yourself" value={settings.bio} onChange={(e) => setSettings({ ...settings, bio: e.target.value })} />
           </div>
           <div>
-            <label className="block text-sm font-medium">Payment Method</label>
-            <Select onValueChange={(value) => setSettings({ ...settings, paymentMethod: value })}>
-              <SelectTrigger className="border rounded-lg p-2 w-full">{settings.paymentMethod}</SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Credit Card">Credit Card</SelectItem>
-                <SelectItem value="PayPal">PayPal</SelectItem>
-                <SelectItem value="Mpesa">Mpesa</SelectItem>
-              </SelectContent>
-            </Select>
+          <label className="block text-sm font-medium text-gray-700">Payment Method</label>
+      <Select onValueChange={(value) => setSettings({ ...settings, paymentMethod: value })}>
+        <SelectTrigger className="border rounded-lg p-2 w-full flex items-center gap-2">
+          {settings.paymentMethod === "Credit Card" && <FaCreditCard className="text-blue-600" />}
+          {settings.paymentMethod === "PayPal" && <FaPaypal className="text-blue-500" />}
+          {settings.paymentMethod === "Mpesa" && <MdMobileFriendly className="text-green-600" />}
+          {settings.paymentMethod || "Select Payment Method"}
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="Credit Card" className="flex items-center gap-2">
+            <FaCreditCard className="text-blue-600" /> Credit Card
+          </SelectItem>
+          <SelectItem value="PayPal" className="flex items-center gap-2">
+            <FaPaypal className="text-blue-500" /> PayPal
+          </SelectItem>
+          <SelectItem value="Mpesa" className="flex items-center gap-2">
+            <MdMobileFriendly className="text-green-600" /> Mpesa
+          </SelectItem>
+        </SelectContent>
+      </Select>
           </div>
           <Button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 w-full">
             Save Settings

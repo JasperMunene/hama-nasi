@@ -123,40 +123,71 @@ export function AppSidebar() {
             </div>
           </div>
 
-          {/* User Profile */}
-          <div className="p-4 border-t border-gray-100 relative">
-            <div className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
-              onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}>
-              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                <UserCircle className="w-5 h-5 text-[#0000C7]" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
-                  John Smith
-                </p>
-                <p className="text-xs text-gray-500 truncate">
-                  john@example.com
-                </p>
-              </div>
-              <Button variant="ghost" size="icon" className="ml-auto">
-                <Bell className="h-4 w-4 text-gray-400" />
-              </Button>
-            </div>
-            {isProfileMenuOpen && (
-              <div className="absolute bottom-16 left-4 bg-white shadow-lg rounded-lg w-48">
-                <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                  View Profile
-                </Link>
-                <button onClick={handleSwitchAccount} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                  Switch Account
-                </button>
-                <button onClick={handleLogout} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                  Logout
-                </button>
-              </div>
-            )}
-          </div>
+    {/* User Profile */}
+<div className="p-4 border-t border-gray-100 relative">
+  {/* Profile (Hidden When Dropdown is Open) */}
+  {!isProfileMenuOpen && (
+    <div
+      className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-blue-100 transition-all duration-200 cursor-pointer"
+      onClick={() => setIsProfileMenuOpen(true)}
+    >
+      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg">
+        <UserCircle className="w-6 h-6 text-white" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-semibold text-gray-900 truncate">John Smith</p>
+        <p className="text-xs text-gray-600 truncate">john@example.com</p>
+      </div>
+      <Button variant="ghost" size="icon" className="ml-auto">
+        <Bell className="h-5 w-5 text-blue-500 hover:text-blue-700 transition" />
+      </Button>
+    </div>
+  )}
+
+  {/* Dropdown Menu (Moves Profile Inside When Open) */}
+  {isProfileMenuOpen && (
+    <div className="absolute bottom-full left-1/2 -translate-x-1/2 translate-y-[-12px] bg-white shadow-2xl rounded-xl w-64 border border-gray-200 transition-all duration-300 animate-fade-in">
+      {/* Profile Inside Dropdown */}
+      <div
+        className="flex flex-col items-center gap-2 px-4 py-5 bg-gradient-to-br from-blue-500 to-[#0000C7] border-b rounded-t-xl cursor-pointer"
+        onClick={() => setIsProfileMenuOpen(false)}
+      >
+        <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-md">
+          <UserCircle className="w-8 h-8 text-blue-600" />
         </div>
+        <div className="text-center">
+          <p className="text-sm font-semibold text-white">John Smith</p>
+          <p className="text-xs text-blue-200">john@example.com</p>
+        </div>
+      </div>
+
+      {/* Dropdown Menu Items */}
+      <Link
+        href="/profile"
+        className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-800 hover:bg-blue-100 transition-all duration-200"
+      >
+        <UserCircle className="w-5 h-5 text-blue-600" />
+        View Profile
+      </Link>
+      <button
+        onClick={handleSwitchAccount}
+        className="flex items-center gap-3 w-full text-left px-4 py-3 text-sm font-medium text-gray-800 hover:bg-blue-100 transition-all duration-200"
+      >
+        <Users className="w-5 h-5 text-blue-600" />
+        Switch Account
+      </button>
+      <button
+        onClick={handleLogout}
+        className="flex items-center gap-3 w-full text-left px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-100 transition-all duration-200 rounded-b-xl"
+      >
+        <LogOut className="w-5 h-5 text-red-600" />
+        Logout
+      </button>
+    </div>
+  )}
+</div>
+
+</div>
       </nav>
     </>
   )
