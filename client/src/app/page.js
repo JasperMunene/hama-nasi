@@ -8,12 +8,16 @@ const whyChooseUsData = [
   {
     title: "Your Trusted Moving Partner",
     description: "At Hama Nasi, it’s about the trust you place in a moving partner to handle a pivotal moment in your life.",
+    quote: "Hama Nasi made our move an absolute breeze! The team was incredibly professional, handling our belongings with care and efficiency.",
+    reviewer: "- Derrick Reimer",
     imgSrc: "https://media.istockphoto.com/id/622277572/photo/happy-delivery-men-carrying-cardboard-box-and-carpet.jpg?s=612x612&w=0&k=20&c=JfJCWaBSo8X0vHwO79Vdx4k9Oh7FytjiAaesFC21CzY=",
     reverse: false,
   },
   {
-    title: "Beyond Moving-Crafting Your Perfect Move",
+    title: "Beyond Moving - Crafting Your Perfect Move",
     description: "Discover a moving experience like no other at Hama Nasi. We go beyond merely transporting items; we craft a personalized moving solution tailored to your needs.",
+    quote: "Every great journey begins with a single move. Hama Nasi turned our relocation into an effortless experience!",
+    reviewer: "- Sarah Johnson",
     imgSrc: "https://thumbs.dreamstime.com/b/movers-carrying-sofa-outside-truck-street-full-length-young-male-77511013.jpg",
     reverse: true,
   }
@@ -92,6 +96,8 @@ function Page() {
               <div className="why-item">
                 <h3>{item.title}</h3>
                 <p>{item.description}</p>
+                <blockquote>"{item.quote}"</blockquote>
+                <p className="reviewer">{item.reviewer}</p>
               </div>
             </div>
           </div>

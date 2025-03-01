@@ -61,8 +61,14 @@ export default function Signup() {
                     {/* Google Signup Button */}
                     <p>or signup with</p>
                     <button className="google-signup-btn" onClick={handleGoogleSignup}>
-                        <Image src="/google.png" alt="Google Icon" width={24} height={24} />
+                        <Image src="/google.png" alt="Google Icon" width={80} height={40} />
                     </button>
+
+                    <p className="login-link">
+                       Already have an account? 
+                       <button className="login-button" onClick={() => router.push("/login")}>Login</button>
+                    </p>
+
                 </div>
 
                 {/* Right: Illustration */}

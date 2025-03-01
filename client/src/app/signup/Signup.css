@@ -12,7 +12,7 @@
 .main-container {
     display: flex;
     width: 85%;
-    max-width: 1000px;
+    max-width: 900px;
     background: #e7e9fc;
     border-radius: 12px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
@@ -82,7 +82,7 @@ button:hover {
     border: none;
     background: none;
     cursor: pointer;
-    text-align: center;
+    text-align: left
 }
 
 /* Right: Image container */
