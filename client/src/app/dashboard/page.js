@@ -1,12 +1,34 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-export default function dashboard() {
+export default function Dashboard() {
+  const [userName, setUserName] = useState("Loading...");
   const [selectedDate, setSelectedDate] = useState(3);
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const response = await fetch('/api/users/me', { credentials: 'include' });
+
+        if (response.ok) {
+          const userData = await response.json();
+          setUserName(userData.name || "User");
+        } else {
+          setUserName("Guest");
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        setUserName("Guest");
+      }
+    }
+
+    fetchUser();
+  }, []);
+
   const inventoryItems = [
     { item: 'Bed', category: 'Furniture', condition: 'New' },
     { item: 'Dresser', category: 'Furniture', condition: 'New' },
@@ -25,7 +47,7 @@ export default function dashboard() {
 
   return (
     <div className="w-full min-h-screen bg-gray-100 p-8">
-      <h1 className="text-2xl font-bold">Welcome, Sarah! Ready to start planning your move?</h1>
+      <h1 className="text-2xl font-bold">Welcome, {userName}! Ready to start planning your move?</h1>
       <p className="text-gray-600 mt-2">Move in just a few steps</p>
 
       {/* Progress Bar */}

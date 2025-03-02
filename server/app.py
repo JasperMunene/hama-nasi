@@ -3,7 +3,8 @@ from flask_restful import Api, Resource
 from flask_migrate import Migrate
 from flask_cors import CORS
 from resources.auth_resource import SignupResource, LoginResource, LogoutResource, LoginGoogle, AuthorizeGoogle
-from resources.user_resource import UserResource, SingleUser
+from resources.user_resource import UserResource, SingleUser,CurrentUser
+from resources.move_resource import BookMove, UserMoves
 from flask_jwt_extended import JWTManager
 from extensions import bcrypt, oauth
 from models import db
@@ -57,9 +58,16 @@ api.add_resource(AuthorizeGoogle, '/auth/authorize/google', endpoint='authorize_
 # User Routes
 api.add_resource(UserResource, '/users')
 api.add_resource(SingleUser, '/users/<id>')
+api.add_resource(CurrentUser, '/users/me')
 
 # Health Routes
 api.add_resource(Health, '/')
+
+
+#Book a Move Routes
+api.add_resource(BookMove, "/moves/book")
+api.add_resource(UserMoves, "/moves")
+
 
 if __name__ == '__main__':
     app.run()
