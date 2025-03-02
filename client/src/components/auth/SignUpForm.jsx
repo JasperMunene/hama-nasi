@@ -59,7 +59,7 @@ export default function SignUpForm() {
 
     // Concatenate first name and last name to create the "name" field
     const payload = {
-      name: ${firstName} ${lastName},
+      name: `${firstName} ${lastName}`,
       email,
       password,
     };
@@ -76,7 +76,7 @@ export default function SignUpForm() {
         setSuccessMessage("Signup successful!");
         setErrors({ firstName: "", lastName: "", email: "", password: "", general: "" });
         setFirstName(""); setLastName(""); setEmail(""); setPassword("");
-        router.push(/verify?email=${encodeURIComponent(email)});
+        router.push(`/verify?email=${encodeURIComponent(email)}`);
       } else {
         setErrors((prev) => ({ ...prev, general: data.message || "Signup failed" }));
       }
