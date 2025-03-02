@@ -30,7 +30,8 @@ app.json.compact = False
 bcrypt.init_app(app)
 oauth.init_app(app)
 
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+
 migrate = Migrate(app, db)
 db.init_app(app)
 jwt = JWTManager(app)
