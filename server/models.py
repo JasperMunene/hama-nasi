@@ -21,6 +21,11 @@ class User(db.Model, SerializerMixin):
     role = db.Column(db.String(50), default='User', nullable=False)
     mover_id = db.Column(db.Integer, db.ForeignKey('movers.id', ondelete="SET NULL"), nullable=True)
     house_type = db.Column(db.String(100), server_default='None', nullable=False)
+    otp_code = db.Column(db.String(6), nullable=True)
+    otp_expires_at = db.Column(db.DateTime, nullable=True)
+    is_verified = db.Column(db.Boolean, default=False)
+    reset_token = db.Column(db.String(64), nullable=True)
+    reset_expires_at = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=db.func.now())
     updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
 

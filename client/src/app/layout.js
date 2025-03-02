@@ -1,11 +1,11 @@
-import { Afacad } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 
 
-const afacad = Afacad({
+const outfit = Outfit({
+  variable: "--font-outfit-sans",
   subsets: ["latin"],
-  weight: ['600']
 });
 
 export const metadata = {
@@ -16,7 +16,7 @@ export const metadata = {
 export default async function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${afacad.className} antialiased`}>
+      <body className={`${outfit.variable} antialiased`}>
         {children}
         <Toaster />
       </body>
