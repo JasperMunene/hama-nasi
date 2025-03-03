@@ -1,42 +1,154 @@
-"use client";  // Ensure this is marked as a client component
+"use client";
 import React, { useState } from "react";
-import { useRouter } from 'next/navigation';  // Import from 'next/navigation' for app directory
-import { FaBars, FaMoneyBillWave, FaClock, FaHome, FaTruck, FaStar, FaCog, FaChartLine } from "react-icons/fa";
+import { useRouter } from "next/navigation";
+import { FaHome, FaTruck, FaMoneyBillWave, FaClock, FaBars, FaStar } from "react-icons/fa";
+import { MdOutlineSettings } from "react-icons/md";
+import { Switch } from "@/components/ui/switch";
+import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
-const Sidebar = ({ isOpen, toggleSidebar }) => {
+// Sidebar Component
+const Sidebar = ({ isOpen, setActivePage }) => {
   return (
-    <div className={`bg-gray-900 text-white w-56 min-h-screen p-5 fixed transition-transform ${isOpen ? "translate-x-0" : "-translate-x-56"} md:translate-x-0`}>
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">MoversApp</h2>
-        <FaCog className="cursor-pointer" />
-      </div>
-      <ul className="mt-6 space-y-4">
-        <li className="flex items-center space-x-2 hover:text-blue-400 cursor-pointer" onClick={() => document.getElementById("dashboard-section").scrollIntoView({ behavior: "smooth" })}>
-          <FaHome />
-          <span>Dashboard</span>
+    <div
+      className={`bg-white text-black w-56 min-h-screen p-5 fixed shadow-md transition-transform ${
+        isOpen ? "translate-x-0" : "-translate-x-56"
+      } md:translate-x-0`}
+    >
+      <h2 className="text-lg font-semibold mb-6">Hama Nasi</h2>
+      <ul className="space-y-4">
+        <li
+          className="flex items-center space-x-2 cursor-pointer hover:text-blue-600"
+          onClick={() => setActivePage("dashboard")}
+        >
+          <FaHome /> <span>Home</span>
         </li>
-        <li className="flex items-center space-x-2 hover:text-blue-400 cursor-pointer" onClick={() => document.getElementById("moves-section").scrollIntoView({ behavior: "smooth" })}>
-          <FaTruck />
-          <span>Moves</span>
+        <li
+          className="flex items-center space-x-2 cursor-pointer hover:text-blue-600"
+          onClick={() => setActivePage("moves")}
+        >
+          <FaStar /> <span>Moves</span>
         </li>
-        <li className="flex items-center space-x-2 hover:text-blue-400 cursor-pointer" onClick={() => document.getElementById("revenue-section").scrollIntoView({ behavior: "smooth" })}>
-          <FaMoneyBillWave />
-          <span>Total Revenue</span>
-        </li>
-        <li className="flex items-center space-x-2 hover:text-blue-400 cursor-pointer" onClick={() => document.getElementById("analytics-section").scrollIntoView({ behavior: "smooth" })}>
-          <FaChartLine />
-          <span>Analytics</span>
+        <li
+          className="flex items-center space-x-2 cursor-pointer hover:text-blue-600"
+          onClick={() => setActivePage("settings")}
+        >
+          <MdOutlineSettings /> <span>Settings</span>
         </li>
       </ul>
     </div>
   );
 };
 
+// Moves Component (updated to display as cards)
+const Moves = ({ moves, handleViewClick }) => {
+  return (
+    <div className="w-full p-6 flex justify-center items-center min-h-screen">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {moves.map((move) => (
+          <div key={move.id} className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300">
+            <img src={move.image} alt={move.name} className="w-full h-40 object-cover rounded-lg mb-4" />
+            <h3 className="text-lg font-semibold">{move.name}</h3>
+            <p className="text-sm text-gray-500">{move.route}</p>
+            <p className="text-lg font-bold text-blue-600 mt-2">{move.price}</p>
+            <Button
+              onClick={() => handleViewClick(move.id)}
+              className="bg-blue-500 text-white mt-4 w-full py-2 rounded-lg hover:bg-blue-600"
+            >
+              View
+            </Button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Settings Component
+const Settings = () => {
+  const [settings, setSettings] = useState({
+    notifications: true,
+    theme: "light",
+    language: "English",
+    privacy: "Public",
+    password: "",
+    bio: "",
+    paymentMethod: "Credit Card",
+  });
+
+  return (
+    <div className="w-full p-6 flex justify-center items-center min-h-screen">
+      <div className="w-full max-w-lg bg-white shadow-lg p-6 rounded-lg">
+        <h2 className="text-xl font-semibold mb-4">Settings</h2>
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <span>Enable Notifications</span>
+            <Switch
+              checked={settings.notifications}
+              onCheckedChange={() =>
+                setSettings({ ...settings, notifications: !settings.notifications })
+              }
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Theme</label>
+            <Select onValueChange={(value) => setSettings({ ...settings, theme: value })}>
+              <SelectTrigger className="border rounded-lg p-2 w-full">{settings.theme}</SelectTrigger>
+              <SelectContent>
+                <SelectItem value="light">Light</SelectItem>
+                <SelectItem value="dark">Dark</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Language</label>
+            <Select onValueChange={(value) => setSettings({ ...settings, language: value })}>
+              <SelectTrigger className="border rounded-lg p-2 w-full">{settings.language}</SelectTrigger>
+              <SelectContent>
+                <SelectItem value="English">English</SelectItem>
+                <SelectItem value="Spanish">Spanish</SelectItem>
+                <SelectItem value="French">French</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Change Password</label>
+            <Input
+              type="password"
+              className="border rounded-lg p-2 w-full"
+              placeholder="New Password"
+              value={settings.password}
+              onChange={(e) => setSettings({ ...settings, password: e.target.value })}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Bio</label>
+            <Textarea
+              className="border rounded-lg p-2 w-full"
+              placeholder="Tell us about yourself"
+              value={settings.bio}
+              onChange={(e) => setSettings({ ...settings, bio: e.target.value })}
+            />
+          </div>
+          <Button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 w-full">
+            Save Settings
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Dashboard Component
 const Dashboard = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [activePage, setActivePage] = useState("dashboard"); // Set initial active page
+
   const toggleSidebar = () => setIsOpen(!isOpen);
 
-  const router = useRouter();  // Initialize the router
+  const router = useRouter(); // Initialize the router
 
   // Dashboard stats data
   const stats = [
@@ -55,13 +167,6 @@ const Dashboard = () => {
     { id: 6, name: "Sarah", price: "KES 250,000", route: "Mombasa - Malindi", image: "https://media.istockphoto.com/id/478803372/photo/attractive-young-sports-woman-outdoors.jpg?s=612x612&w=0&k=20&c=wunjloTp0r1ydA6HPNK7FhDc2377owrjYao8p1EL0II=" }
   ];
 
-  const reviews = [
-    { id: 1, customer: "Luka", rating: 5, comment: "Great service! Mover was on time and professional!" },
-    { id: 2, customer: "Mark", rating: 4, comment: "Good job overall, but could be faster."},
-    { id: 3, customer: "Marcy", rating: 5, comment: "Excellent experience. Highly recommend!" },
-    { id: 4, customer: "Alice", rating: 3, comment: "Average service."}
-  ];
-
   const handleViewClick = (moveId) => {
     router.push(`/companydashboard/${moveId}`);
   };
@@ -69,7 +174,7 @@ const Dashboard = () => {
   return (
     <div className="flex">
       {/* Sidebar */}
-      <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
+      <Sidebar isOpen={isOpen} setActivePage={setActivePage} />
 
       {/* Main Content */}
       <div className="flex-1 p-6 ml-0 md:ml-56 transition-all">
@@ -77,64 +182,32 @@ const Dashboard = () => {
           <FaBars />
         </button>
 
-        {/* Dashboard Stats */}
-        <h2 className="text-2xl font-bold" id="dashboard-section">Dashboard</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-          {stats.map((stat, index) => (
-            <div key={index} className="p-4 bg-white rounded-lg shadow-md flex items-center">
-              <div className={`text-3xl ${stat.color} p-3 rounded-full mr-4`}>
-                {stat.icon}
-              </div>
-              <div>
-                <p className="text-gray-500">{stat.title}</p>
-                <h3 className="text-xl font-bold">{stat.value}</h3>
-                <p className={`text-sm ${stat.change.startsWith("+") ? "text-green-500" : "text-red-500"}`}>
-                  {stat.change}
-                </p>
-              </div>
+        {/* Conditionally render content based on active page */}
+        {activePage === "dashboard" && (
+          <>
+            <h2 className="text-2xl font-bold" id="dashboard-section">Dashboard</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+              {stats.map((stat, index) => (
+                <div key={index} className="p-4 bg-white rounded-lg shadow-md flex items-center">
+                  <div className={`text-3xl ${stat.color} p-3 rounded-full mr-4`}>
+                    {stat.icon}
+                  </div>
+                  <div>
+                    <p className="text-gray-500">{stat.title}</p>
+                    <h3 className="text-xl font-bold">{stat.value}</h3>
+                    <p className={`text-sm ${stat.change.startsWith("+") ? "text-green-500" : "text-red-500"}`}>
+                      {stat.change}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        )}
 
-        {/* Moves Section */}
-        <section id="moves-section" className="mt-10">
-          <h2 className="text-2xl font-bold">Get your next Move</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-4">
-            {moves.map((move) => (
-              <div key={move.id} className="p-4 bg-white rounded-lg shadow-md">
-                <img src={move.image} alt={move.name} className="rounded-lg w-full h-40 object-cover" />
-                <h3 className="text-lg font-bold mt-2">{move.name}</h3>
-                <p className="text-gray-500">{move.route}</p>
-                <p className="text-gray-700 font-bold">{move.price}</p>
-                <div className="flex justify-between items-center mt-3">
-                  <button className="bg-blue-500 text-white px-4 py-2 rounded transition duration-300 hover:bg-blue-600" onClick={() => handleViewClick(move.id)}>
-                    View
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+        {activePage === "moves" && <Moves moves={moves} handleViewClick={handleViewClick} />}
 
-        {/* Reviews Section */}
-        <section id="reviews-section" className="mt-10">
-          <h2 className="text-2xl font-bold">Customer Reviews & Ratings</h2>
-          <div className="mt-4">
-            {reviews.map((review) => (
-              <div key={review.id} className="p-4 bg-white rounded-lg shadow-md mb-4">
-                <p className="text-gray-700 font-bold">{review.customer}</p>
-                <p className="text-gray-500">Rating: {review.rating} <FaStar className="inline text-yellow-500" /></p>
-                <p className="text-gray-600 italic">"{review.comment}"</p>
-                <div className="mt-2">
-                  <textarea className="w-full p-2 border rounded" placeholder="Write your feedback here..."></textarea>
-                  <button className="bg-green-500 text-white px-4 py-2 rounded mt-2 transition duration-300 hover:bg-green-600">
-                    Submit
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+        {activePage === "settings" && <Settings />}
       </div>
     </div>
   );
