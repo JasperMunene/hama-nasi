@@ -80,6 +80,7 @@ export default function Home() {
         </div>
       </nav>
 
+
       {/* Hero Section */}
       <section id="home" className="bg-[#001a4d] text-white">
         <div className="container mx-auto px-4 py-16 md:py-24 flex flex-col md:flex-row items-center">
