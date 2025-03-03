@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,16 +18,16 @@ export default function BookMove() {
   const [inventoryList, setInventoryList] = useState([]);
 
   useEffect(() => {
-    fetch("https://your-backend-url.com/moves")
+    fetch("http://127.0.0.1:5000/moves")
       .then((res) => res.json())
-      .then((data) => setMoveHistory(data))
+      .then((data) => setMoveHistory(Array.isArray(data) ? data : [])) // Ensure array
       .catch((err) => console.error("Error fetching moves:", err));
   }, []);
 
   useEffect(() => {
-    fetch("https://your-backend-url.com/inventory")
+    fetch("http://127.0.0.1:5000/inventory")
       .then((res) => res.json())
-      .then((data) => setInventoryList(data))
+      .then((data) => setInventoryList(Array.isArray(data) ? data : [])) // Ensure array
       .catch((err) => console.error("Error fetching inventory:", err));
   }, []);
 
@@ -44,17 +44,17 @@ export default function BookMove() {
   };
 
   const generateTrackingNumber = () => {
-    return "TRK-" + Math.random().toString(36).substr(2, 9).toUpperCase();
+    return "TRK-" + Math.random().toString(36).slice(2, 9).toUpperCase();
   };
 
   const requestQuote = () => {
-    fetch("https://your-backend-url.com/moves/book", {
+    fetch("http://127.0.0.1:5000/moves/book", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(quoteDetails),
     })
       .then((res) => res.json())
-      .then((data) => {
+      .then(() => {
         setNotification("Move booked! A notification has been sent.");
         sendPushNotification("Your move has been booked!");
       })
@@ -62,7 +62,7 @@ export default function BookMove() {
   };
 
   const trackMove = () => {
-    fetch(`https://your-backend-url.com/moves/${trackingNumber}`)
+    fetch(`http://127.0.0.1:5000/moves/${trackingNumber}`)
       .then((res) => res.json())
       .then((data) => setTrackingInfo(data))
       .catch((err) => console.error("Error tracking move:", err));
@@ -70,9 +70,9 @@ export default function BookMove() {
 
   const acceptMove = (moveId) => {
     const newTrackingNumber = generateTrackingNumber();
-    fetch(`https://your-backend-url.com/moves/${moveId}/accept`, { method: "POST" })
+    fetch(`http://127.0.0.1:5000/moves/${moveId}/accept`, { method: "POST" })
       .then((res) => res.json())
-      .then((data) => {
+      .then(() => {
         setTrackingNumber(newTrackingNumber);
         setMoverResponse("Move accepted! Tracking number generated.");
         setNotification(`Notification sent to customer. Tracking Number: ${newTrackingNumber}`);
@@ -82,9 +82,9 @@ export default function BookMove() {
   };
 
   const rejectMove = (moveId) => {
-    fetch(`https://your-backend-url.com/moves/${moveId}/reject`, { method: "POST" })
+    fetch(`http://127.0.0.1:5000/moves/${moveId}/reject`, { method: "POST" })
       .then((res) => res.json())
-      .then((data) => {
+      .then(() => {
         setMoverResponse("Move rejected!");
         setNotification("Notification sent to customer about rejection.");
         sendPushNotification("Your move has been rejected.");
@@ -111,7 +111,7 @@ export default function BookMove() {
                 <Input type="date" value={quoteDetails.date} onChange={(e) => setQuoteDetails({ ...quoteDetails, date: e.target.value })} />
                 <Select onValueChange={(value) => setQuoteDetails({ ...quoteDetails, inventory: value })}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select Inventory" />
+                    <SelectValue placeholder="Select Inventory">{quoteDetails.inventory}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {inventoryList.map((item) => (

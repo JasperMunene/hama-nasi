@@ -5,6 +5,7 @@ from flask_cors import CORS
 from resources.auth_resource import SignupResource, LoginResource, LogoutResource, LoginGoogle, AuthorizeGoogle
 from resources.user_resource import UserResource, SingleUser,CurrentUser
 from resources.move_resource import BookMove, UserMoves
+from resources.inventory_resource import InventoryResource, SingleInventoryResource
 from flask_jwt_extended import JWTManager
 from extensions import bcrypt, oauth
 from models import db
@@ -68,6 +69,10 @@ api.add_resource(Health, '/')
 #Book a Move Routes
 api.add_resource(BookMove, "/moves/book")
 api.add_resource(UserMoves, "/moves")
+
+# Inventory Routes
+api.add_resource(InventoryResource, '/inventory')
+api.add_resource(SingleInventoryResource, '/inventory/<int:id>')
 
 
 if __name__ == '__main__':

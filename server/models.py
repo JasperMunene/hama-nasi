@@ -29,6 +29,9 @@ class User(db.Model, SerializerMixin):
     reviews = db.relationship('Review', backref='user', lazy=True, cascade="all, delete-orphan")
     payments = db.relationship('Payment', backref='user', lazy=True, cascade="all, delete-orphan")
 
+    # Prevent recursive serialization
+    serialize_rules = ("-moves.user", "-inventory_users.user", "-reviews.user", "-payments.user")
+
 # Movers Table
 class Mover(db.Model, SerializerMixin):
     __tablename__ = 'movers'
@@ -49,6 +52,8 @@ class Mover(db.Model, SerializerMixin):
     reviews = db.relationship('Review', backref='mover', lazy=True, cascade="all, delete-orphan")
     users = db.relationship('User', backref='mover', lazy=True)
 
+    serialize_rules = ("-quotes.mover", "-bookings.mover", "-reviews.mover", "-users.mover")
+
 # Properties Table
 class Property(db.Model, SerializerMixin):
     __tablename__ = 'properties'
@@ -60,6 +65,8 @@ class Property(db.Model, SerializerMixin):
 
     # Relationships
     inventory_items = db.relationship('Inventory', backref='property', lazy=True, cascade="all, delete-orphan")
+
+    serialize_rules = ("-inventory_items.property",)
 
 # Inventory Table
 class Inventory(db.Model, SerializerMixin):
@@ -75,6 +82,8 @@ class Inventory(db.Model, SerializerMixin):
     # Relationships
     inventory_users = db.relationship('InventoryUser', backref='inventory', lazy=True, cascade="all, delete-orphan")
 
+    serialize_rules = ("-inventory_users.inventory", "-property.inventory_items")
+
 # Inventory User Table
 class InventoryUser(db.Model, SerializerMixin):
     __tablename__ = 'inventory_users'
@@ -86,6 +95,8 @@ class InventoryUser(db.Model, SerializerMixin):
     condition = db.Column(db.String(50))
     created_at = db.Column(db.DateTime, default=db.func.now())
     updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
+
+    serialize_rules = ("-user.inventory_users", "-inventory.inventory_users")
 
 # Moves Table
 class Move(db.Model, SerializerMixin):
@@ -106,6 +117,8 @@ class Move(db.Model, SerializerMixin):
     # Relationships
     bookings = db.relationship('Booking', backref='move', lazy=True, cascade="all, delete-orphan")
     quotes = db.relationship('Quote', backref='move', lazy=True, cascade="all, delete-orphan")
+
+    serialize_rules = ("-bookings.move", "-quotes.move", "-user.moves")
 
 # Bookings Table
 class Booking(db.Model, SerializerMixin):
