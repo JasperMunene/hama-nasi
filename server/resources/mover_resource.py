@@ -16,8 +16,7 @@ class MoverResource(Resource):
         try:
             # Check if a mover with the same company name or email already exists
             if Mover.query.filter(
-                (Mover.company_name == args['company_name']) |
-                (Mover.email == args['email'])
+                (Mover.company_name == args['company_name'])
             ).first():
                 return {"message": "Mover with the given company name or email already exists"}, 400
 

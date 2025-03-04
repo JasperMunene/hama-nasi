@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Company = () => {
+const CompanyDash = () => {
   return (
     <div>
       Company
@@ -8,4 +8,4 @@ const Company = () => {
   )
 }
 
-export default Company
+export default CompanyDash

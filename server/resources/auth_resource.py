@@ -41,7 +41,7 @@ class SignupResource(Resource):
 
         # Send OTP email using Resend
         otp_email_params = {
-            "from": "HamaNasi <onboarding@resend.dev>",
+            "from": "HamaNasi <onboarding@hello.fueldash.net>",
             "to": [args['email']],
             "subject": "Verify Your Email Address",
             "html": f"<p>Your OTP code is <strong>{new_user.otp_code}</strong>. It expires in 10 minutes.</p>"
@@ -219,7 +219,7 @@ class ResendOTPResource(Resource):
 
         # Prepare the OTP email parameters
         otp_email_params = {
-            "from": "HamaNasi <onboarding@resend.dev>",
+            "from": "HamaNasi <onboarding@hello.fueldash.net>",
             "to": [args['email']],
             "subject": "Verify Your Email Address",
             "html": f"<p>Your new OTP code is <strong>{new_otp}</strong>. It expires in 10 minutes.</p>"
@@ -255,7 +255,7 @@ class ForgotPasswordResource(Resource):
         # Build a password reset link pointing to the frontend page.
         reset_link = f"http://localhost:3000/new-password?token={reset_token}"
         reset_email_params = {
-            "from": "Hama Nasi <onboarding@resend.dev>",
+            "from": "Hama Nasi <onboarding@hello.fueldash.net>",
             "to": [args["email"]],
             "subject": "Reset Your Password",
             "html": f"<p>To reset your password, click the following link: <a href='{reset_link}'>{reset_link}</a>. This link expires in 30 minutes.</p>"

@@ -58,7 +58,7 @@ export default function Verification() {
       const data = await response.json();
       if (response.ok) {
         console.log("Email verified:", data);
-        router.push("/dashboard");
+        router.push("/onboarding");
       } else {
         console.error("Verification error:", data);
         alert(data.message || "Verification failed");
