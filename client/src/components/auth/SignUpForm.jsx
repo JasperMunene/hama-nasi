@@ -65,7 +65,7 @@ export default function SignUpForm() {
     };
 
     try {
-      const res = await fetch("http://127.0.0.1:5000/auth/signup", {
+      const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -89,7 +89,7 @@ export default function SignUpForm() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://127.0.0.1:5000/auth/login/google";
+    window.location.href = "/api/auth/login/google";
   };
 
   return (

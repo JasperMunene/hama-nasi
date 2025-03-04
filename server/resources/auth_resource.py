@@ -91,7 +91,7 @@ class VerifyOTPResource(Resource):
             access_token,
             httponly=True,
             secure=True,
-            samesite='Strict'
+            samesite='None'
         )
         return response
 
@@ -125,8 +125,8 @@ class LoginResource(Resource):
                 access_token,
                 httponly=True,
                 secure=True,
-                samesite='Strict',
-                expires=expires
+                samesite='None',
+                expires=expires,
             )
         else:
             response.set_cookie(
@@ -134,7 +134,7 @@ class LoginResource(Resource):
                 access_token,
                 httponly=True,
                 secure=True,
-                samesite='Strict'
+                samesite='None'
             )
         return response
 
@@ -192,7 +192,7 @@ class AuthorizeGoogle(Resource):
             access_token,
             httponly=True,
             secure=True,
-            samesite='Strict'
+            samesite='None'
         )
         return response
 

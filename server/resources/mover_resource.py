@@ -4,7 +4,7 @@ from models import db, Mover, User
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 class MoverResource(Resource):
-    @jwt_required()
+    # @jwt_required()
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('company_name', type=str, required=True, help="Company name cannot be blank!")

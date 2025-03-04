@@ -41,7 +41,7 @@ class Mover(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     company_name = db.Column(db.String(150), unique=True, nullable=False)
-    email = db.Column(db.String(150), unique=True, nullable=False)
+    email = db.Column(db.String(150), unique=True, nullable=True)
     phone = db.Column(db.String(15), nullable=False)
     rating = db.Column(db.Float, default=0.0)
     availability_status = db.Column(db.String(50), default='Available')
