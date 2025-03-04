@@ -8,6 +8,7 @@ import {
   Home,
   ChevronRight,
   Bell,
+<<<<<<< HEAD
   UserCircle,
   LogOut,
   Users
@@ -17,6 +18,14 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion"; // Import for animations
+=======
+  UserCircle
+} from "lucide-react"
+import Link from "next/link"
+import { useState } from "react"
+import Button from "@/components/elements/button/Button";
+import { cn } from "@/lib/utils"
+>>>>>>> ee69d1f72f0ffebb70297714b4307019c7cabcf3
 
 export function AppSidebar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

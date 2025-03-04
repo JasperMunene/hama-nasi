@@ -1,5 +1,4 @@
 import { cookies } from "next/headers"
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/Sidebar";
 
 export default async function RootLayout({ children }) {

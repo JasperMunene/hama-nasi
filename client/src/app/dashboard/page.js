@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import  Button  from '@/components/elements/button/Button';
+import  Input  from '@/components/form/input/InputField';
 
 export default function dashboard() {
   const [selectedDate, setSelectedDate] = useState(3);
