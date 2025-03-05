@@ -1,7 +1,7 @@
 "use client";
-import {Checkbox} from "@/components/ui/checkbox";
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
+import Checkbox from "@/components/form/input/Checkbox";
+import Input from "@/components/form/input/InputField";
+import Label from "@/components/form/Label";
 import { EyeOff, Eye } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -65,7 +65,7 @@ export default function SignUpForm() {
     };
 
     try {
-      const res = await fetch("http://127.0.0.1:5000/auth/signup", {
+      const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -89,7 +89,7 @@ export default function SignUpForm() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://127.0.0.1:5000/auth/login/google";
+    window.location.href = "/api/auth/login/google";
   };
 
   return (

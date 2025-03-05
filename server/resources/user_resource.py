@@ -45,6 +45,7 @@ class SingleUser(Resource):
         parser.add_argument('location', type=str)
         parser.add_argument('role', type=str)
         parser.add_argument('mover_id', type=str)
+        parser.add_argument('house_type', type=str)
         args = parser.parse_args()
 
         try:
@@ -63,6 +64,8 @@ class SingleUser(Resource):
                 user.location = args['location']
             if args.get('role') is not None:
                 user.role = args['role']
+            if args.get('house_type') is not None:
+                user.house_type = args['house_type']  # Corrected assignment
             if args.get('mover_id') is not None:
                 user.mover_id = args['mover_id']
 
