@@ -1,0 +1,258 @@
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #b3bdc7e1;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 50px;
+  background-color: #002244;
+  color: white;
+  align-items: center;
+  gap: 2.5rem; /* Adjust for equal spacing */
+}
+
+.logo {
+  font-size: 2rem; /* Adjust size as needed */
+  font-weight: bolder;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 2rem; /* Adjust for equal spacing */
+  align-items: center;
+}
+
+.nav-links li {
+  margin: 0 15px;
+  gap: 2.5rem;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+}
+
+.signup, .login {
+  background-color: white;
+  color: black;
+  border-radius: 5px;
+}
+
+/* Hero Section */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 50px;
+  background-color: #B3BDC7;
+  text-align: left;
+}
+
+.hero-text {
+  max-width: 40%;
+}
+
+.hero-text h1 {
+  font-size: 4.5rem;
+  font-weight: bolder;
+}
+
+.hero-text p {
+  font-size: 2.5rem;
+  margin-top: 10px;
+}
+
+.hero-image img {
+  width: 1000px;
+  max-width: 700px;
+  border-radius: 10px;
+}
+
+/* Services Section */
+.services {
+  font-size: 2.5rem;
+  text-align: center;
+  font-family: itim;
+  font-weight: bold;
+}
+
+.services-text {
+  font-size: 1.5rem;
+  font-family: itim;
+}
+
+.services-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Two columns */
+  gap: 30px;
+  padding: 30px 50px;
+}
+
+/* Service Card */
+.service-card {
+  background: #e0e0e0;
+  width: 100%; /* Covering the entire grid cell */
+  height: 220px;
+  padding: 30px;
+  border-radius: 5px;
+  box-shadow: 0 4px 15px rgba(0, 0, 255, 0.692); /* Blue shadow effect */
+  text-align: left;
+  font-size: 1rem;
+  font-weight: afacad;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  transition: transform 0.5s ease-in-out;
+}
+
+.service-card:hover {
+  transform: scale(1.05);
+}
+
+/* Icon Styling */
+.icon {
+  font-size: 10px; /* Smaller icon */
+  color: blue;
+  margin-bottom: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .services-container {
+    grid-template-columns: 1fr; /* One column for small screens */
+  }
+
+  .service-card {
+    width: 100%;
+  }
+}
+
+.why-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: blue;
+  margin-bottom: 20px;
+}
+
+.why-choose-us {
+  padding: 50px 80px;
+}
+
+.why-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  
+}
+
+.why-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.why-image img {
+  width: 500px; 
+  max-width: 800px; 
+  height: 300px; 
+  border-radius: 10px;
+}
+
+.why-item {
+  flex: 1;
+}
+
+.why-item h3 {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.why-item p {
+  font-size: 1.2rem;
+}
+
+/* Alternate Text and Image */
+.reverse .why-content {
+  flex-direction: row-reverse;
+}
+
+/* Footer */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40px 50px;
+  background-color: #002244;
+  color: white;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 40px;
+}
+
+.footer-section {
+  flex: 1;
+  max-width: 400px;
+}
+
+.footer-section h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.footer-section p {
+  font-size: 1rem;
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-links a {
+  color: white;
+  text-decoration: none;
+  margin-bottom: 8px;
+  transition: color 0.3s ease-in-out;
+}
+
+.footer-links a:hover {
+  color: #1e90ff;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .why-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
