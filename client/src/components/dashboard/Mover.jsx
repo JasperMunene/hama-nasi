@@ -1,125 +1,308 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import  Button  from '@/components/elements/button/Button';
-import  Input  from '@/components/form/input/InputField';
+import { MapPin, Calendar, Package, Truck, Star, ChevronRight, Plus } from 'lucide-react';
 
 export default function MoverDash() {
-  const [selectedDate, setSelectedDate] = useState(3);
-  const inventoryItems = [
-    { item: 'Bed', category: 'Furniture', condition: 'New' },
-    { item: 'Dresser', category: 'Furniture', condition: 'New' },
-    { item: 'Dining Table', category: 'Furniture', condition: 'New' },
-    { item: 'Dining Chairs', category: 'Furniture', condition: 'Used' },
-    { item: 'TV', category: 'Appliances', condition: 'New' },
-    { item: 'Refrigerator', category: 'Appliances', condition: 'New' },
-    { item: 'Microwave', category: 'Appliances', condition: 'New' },
+  const [recentMove, setRecentMove] = useState(null);
+  const [userInventory, setUserInventory] = useState([]);
+  const [loadingMoves, setLoadingMoves] = useState(true);
+  const [loadingInventory, setLoadingInventory] = useState(true);
+
+  // Hardcoded recommended movers for now.
+  const recommendedMovers = [
+    {
+      name: "Swift Movers Ltd",
+      rating: 4.8,
+      reviews: 128,
+      image: "https://cdn.prod.website-files.com/66a6ba5e0799a98c7cb5e8e2/66ac39307d23943c324547a1_Team-6-p-500.jpg"
+    },
+    {
+      name: "Pro Movers Kenya",
+      rating: 4.7,
+      reviews: 96,
+      image: "https://cdn.prod.website-files.com/66a6ba5e0799a98c7cb5e8e2/66ac38e37a7a9145deff15f5_Team-2-p-500.jpg"
+    }
   ];
 
-  const companies = [
-    { name: 'Swift Movers', email: 'hello@swiftmovers.com' },
-    { name: 'Fast Movers', email: 'contact@fastmovers.com' },
-    { name: 'Shift Movers', email: 'info@shiftmovers.com' },
-  ];
+  useEffect(() => {
+    // Fetch moves
+    const fetchMoves = async () => {
+      try {
+        const res = await fetch('/api/moves', {
+          method: 'GET',
+          credentials: 'include'
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.moves && data.moves.length > 0) {
+            // Set the most recent move (assumes moves are sorted by creation)
+            setRecentMove(data.moves[data.moves.length - 1]);
+          }
+        } else {
+          console.error('Failed to fetch moves');
+        }
+      } catch (error) {
+        console.error('Error fetching moves:', error);
+      } finally {
+        setLoadingMoves(false);
+      }
+    };
+
+    // Fetch user inventory
+    const fetchInventory = async () => {
+      try {
+        const res = await fetch('/api/inventory/user', {
+          method: 'GET',
+          credentials: 'include'
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setUserInventory(data.inventory);
+        } else {
+          console.error('Failed to fetch user inventory');
+        }
+      } catch (error) {
+        console.error('Error fetching user inventory:', error);
+      } finally {
+        setLoadingInventory(false);
+      }
+    };
+
+    fetchMoves();
+    fetchInventory();
+  }, []);
+
+  // Format the move date (e.g. "March 15")
+  const formatMoveDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+  };
+
+  // Calculate days left until the move.
+  const daysLeft = (moveDateString) => {
+    const moveDate = new Date(moveDateString);
+    const today = new Date();
+    const diffTime = moveDate - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
 
   return (
-    <div className="w-full min-h-screen bg-gray-100 p-8">
-      <h1 className="text-2xl font-bold">Welcome, Sarah! Ready to start planning your move?</h1>
-      <p className="text-gray-600 mt-2">Move in just a few steps</p>
-
-      {/* Progress Bar */}
-      <div className="w-full flex gap-2 mt-4">
-        <div className="w-1/4 h-2 bg-blue-600"></div>
-        <div className="w-1/4 h-2 bg-gray-300"></div>
-        <div className="w-1/4 h-2 bg-gray-300"></div>
-        <div className="w-1/4 h-2 bg-gray-300"></div>
-      </div>
-
-      {/* Inventory & Calendar */}
-      <div className="flex gap-8 mt-8">
-        <Card className="w-1/2 p-4">
-          <CardContent>
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold">Inventory</h2>
-              <Button className="bg-blue-600 text-white px-3 py-1">See all</Button>
-            </div>
-            <table className="w-full mt-4 border">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="p-2 text-left">Item</th>
-                  <th className="p-2 text-left">Category</th>
-                  <th className="p-2 text-left">Condition</th>
-                </tr>
-              </thead>
-              <tbody>
-                {inventoryItems.map((item, index) => (
-                  <tr key={index} className="border-t">
-                    <td className="p-2">{item.item}</td>
-                    <td className="p-2">{item.category}</td>
-                    <td className="p-2">{item.condition}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </CardContent>
-        </Card>
-
-        {/* Calendar */}
-        <Card className="w-1/3 p-4">
-          <CardContent>
-            <h2 className="text-lg font-semibold mb-3">Move day</h2>
-            <div className="grid grid-cols-7 gap-2 text-center">
-              {[...Array(30).keys()].map((day) => (
-                <Button
-                  key={day + 1}
-                  className={`p-2 w-10 h-10 rounded-lg ${
-                    selectedDate === day + 1 ? 'bg-blue-600 text-white' : 'bg-gray-200'
-                  }`}
-                  onClick={() => setSelectedDate(day + 1)}
-                >
-                  {day + 1}
-                </Button>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Moving Companies */}
-      <div className="mt-8 w-1/3">
-        <h2 className="text-lg font-semibold text-blue-600">Moving Companies</h2>
-        <Input className="w-full p-2 mt-2 border rounded-lg" placeholder="Search for Companies" />
-        <div className="mt-4 space-y-3">
-          {companies.map((company, index) => (
-            <div key={index} className="flex items-center gap-3 p-3 border rounded-lg bg-white">
-              <div className="w-8 h-8 bg-blue-600 rounded-full"></div>
-              <div>
-                <h3 className="font-semibold">{company.name}</h3>
-                <p className="text-gray-500 text-sm">{company.email}</p>
-              </div>
-            </div>
-          ))}
+    <div className="w-full min-h-screen bg-gray-50 p-8 overflow-hidden">
+      {/* Header Section */}
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Welcome back, Sarah! 👋</h1>
+          <p className="text-gray-600 mt-1">Let's plan your next move</p>
         </div>
+        <Link
+          href="/dashboard/book-move"
+          className="flex items-center gap-2 px-4 py-2 bg-[#0063ff] text-white rounded-xl hover:bg-[#0055dd] transition-colors"
+        >
+          <Plus className="h-5 w-5" />
+          Book a Move
+        </Link>
       </div>
 
-      {/* Customer Reviews */}
-      <div className="mt-12">
-        <h2 className="text-lg font-semibold">Customer Review</h2>
-        <p className="text-gray-500">Eum fuga consequentur utadsi et.</p>
-        <div className="flex gap-6 mt-4">
-          <Card className="w-1/3 p-4">
-            <CardContent>
-              <h3 className="font-semibold">Luka</h3>
-              <p className="text-gray-500 text-sm">2 days ago</p>
-              <p className="mt-2 text-gray-600">Lorem Ipsum is simply dummy text.</p>
+      {/* Stats Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <Card className="bg-gradient-to-r from-[#0063ff] to-[#001a4d] text-white">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-blue-100">Next Move</p>
+                <h3 className="text-2xl font-bold mt-1">
+                  {recentMove ? formatMoveDate(recentMove.move_date) : 'N/A'}
+                </h3>
+                {recentMove && (
+                  <p className="text-sm text-blue-200 mt-1">
+                    In {daysLeft(recentMove.move_date)} day{daysLeft(recentMove.move_date) !== 1 ? 's' : ''}
+                  </p>
+                )}
+              </div>
+              <Calendar className="h-10 w-10 text-blue-200" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500">Total Items</p>
+                <h3 className="text-2xl font-bold mt-1">{userInventory.length}</h3>
+                <p className="text-sm text-gray-400 mt-1">In inventory</p>
+              </div>
+              <Package className="h-10 w-10 text-[#0063ff]" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500">Moving Distance</p>
+                <h3 className="text-2xl font-bold mt-1">
+                  {recentMove && recentMove.distance ? recentMove.distance.toFixed(2) + ' km' : 'N/A'}
+                </h3>
+                <p className="text-sm text-gray-400 mt-1">Estimated</p>
+              </div>
+              <Truck className="h-10 w-10 text-[#0063ff]" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left Column */}
+        <div className="lg:col-span-2 space-y-8">
+          {/* Upcoming Moves */}
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold">Upcoming Moves</h2>
+                <Link href="/dashboard/moves" className="text-[#0063ff] hover:text-[#0055dd] text-sm flex items-center">
+                  View All <ChevronRight className="h-4 w-4 ml-1" />
+                </Link>
+              </div>
+              {loadingMoves ? (
+                <p>Loading moves...</p>
+              ) : recentMove ? (
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-5 w-5 text-[#0063ff]" />
+                        <div>
+                          <p className="text-sm text-gray-500">From</p>
+                          <p className="font-medium">{recentMove.from_address}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-5 w-5 text-green-500" />
+                        <div>
+                          <p className="text-sm text-gray-500">To</p>
+                          <p className="font-medium">{recentMove.to_address}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <span className="inline-block px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
+                        {recentMove.move_status}
+                      </span>
+                      <p className="mt-2 text-sm text-gray-500">
+                        {recentMove.estimated_price ? recentMove.estimated_price.toLocaleString() : 'N/A'} Ksh
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <p>No moves found.</p>
+              )}
             </CardContent>
           </Card>
-          <Card className="w-1/3 p-4">
-            <CardContent>
-              <h3 className="font-semibold">Sofia</h3>
-              <p className="text-gray-500 text-sm">2 days ago</p>
-              <p className="mt-2 text-gray-600">Lorem Ipsum is simply dummy text.</p>
+
+          {/* Your Inventory Section */}
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold">Your Inventory</h2>
+                <Link href="/dashboard/inventory" className="text-[#0063ff] hover:text-[#0055dd] text-sm flex items-center">
+                  Manage Inventory <ChevronRight className="h-4 w-4 ml-1" />
+                </Link>
+              </div>
+              {loadingInventory ? (
+                <p>Loading inventory...</p>
+              ) : userInventory && userInventory.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="text-left text-sm text-gray-500">
+                        <th className="pb-4">Item ID</th>
+                        <th className="pb-4">Quantity</th>
+                        <th className="pb-4">Condition</th>
+                        <th className="pb-4">Priority</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-sm">
+                      {userInventory.map((inv) => (
+                        <tr key={inv.id} className="border-t border-gray-100">
+                          <td className="py-3">{inv.inventory_id}</td>
+                          <td className="py-3">{inv.quantity}</td>
+                          <td className="py-3">{inv.condition}</td>
+                          <td className="py-3">{inv.priority}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p>No inventory found.</p>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right Column */}
+        <div className="space-y-8">
+          {/* Recommended Movers */}
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-xl font-semibold mb-6">Recommended Movers</h2>
+              <div className="space-y-4">
+                {recommendedMovers.map((mover, index) => (
+                  <div key={index} className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors">
+                    <Image
+                      src={mover.image}
+                      alt={mover.name}
+                      width={48}
+                      height={48}
+                      className="rounded-full"
+                    />
+                    <div className="flex-1">
+                      <h3 className="font-medium">{mover.name}</h3>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                        <span className="text-sm text-gray-600">{mover.rating}</span>
+                        <span className="text-sm text-gray-400">({mover.reviews} reviews)</span>
+                      </div>
+                    </div>
+                    <ChevronRight className="h-5 w-5 text-gray-400" />
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Recent Activity */}
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-xl font-semibold mb-6">Recent Activity</h2>
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-blue-100 rounded-full">
+                    <Package className="h-4 w-4 text-[#0063ff]" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Added new items to inventory</p>
+                    <p className="text-xs text-gray-500">2 hours ago</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-green-100 rounded-full">
+                    <Truck className="h-4 w-4 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Updated move schedule</p>
+                    <p className="text-xs text-gray-500">Yesterday</p>
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>

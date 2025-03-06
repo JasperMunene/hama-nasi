@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import MoverDash from '@/components/dashboard/Mover';
 import CompanyDash from '@/components/dashboard/Company';
+import Spinner from '@/components/elements/Spinner';
 
 const HomePage = () => {
   const [role, setRole] = useState(null);
@@ -44,7 +45,7 @@ const HomePage = () => {
   }, [router]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Spinner />;
   }
 
   // At this point, role is defined and not null or 'User'.
