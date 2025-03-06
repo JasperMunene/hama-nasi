@@ -17,7 +17,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:5000/:path*',
+        destination: 'https://hama-nasi.onrender.com/:path*',
       },
     ];
   },
