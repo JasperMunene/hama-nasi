@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { UserCircle, Bell, Users, LogOut } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import  Button  from "@/components/elements/button/Button";
 import Link from "next/link";
 
 export default function UserProfile() {

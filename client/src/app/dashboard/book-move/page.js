@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { MapPin, Calendar, Package, ArrowRight, Info } from 'lucide-react';
+import { MapPin, Calendar, Package, ArrowRight, Info, Truck, Clock, CheckCircle2 } from 'lucide-react';
 import { Loader } from '@googlemaps/js-api-loader';
 import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const googleMapsLoader = new Loader({
   apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -16,36 +17,41 @@ const houseTypes = [
   {
     id: 'bedsitter',
     name: 'Bedsitter',
-    description: 'Compact single room setup',
+    description: 'Perfect for single room setups',
     basePrice: 10000,
-    ratePerKm: 1000
+    ratePerKm: 1000,
+    icon: Package
   },
   {
     id: 'studio',
     name: 'Studio',
-    description: 'Open combined living area',
+    description: 'Ideal for open-plan living',
     basePrice: 20000,
-    ratePerKm: 1500
+    ratePerKm: 1500,
+    icon: Package
   },
   {
     id: 'one_bedroom',
     name: 'One Bedroom',
-    description: 'Separate sleeping area',
+    description: 'Suitable for small households',
     basePrice: 30000,
-    ratePerKm: 2000
+    ratePerKm: 2000,
+    icon: Package
   },
   {
     id: 'two_bedroom',
     name: 'Two Bedroom',
-    description: 'Extra space for comfort',
+    description: 'Great for families',
     basePrice: 40000,
-    ratePerKm: 2500
+    ratePerKm: 2500,
+    icon: Package
   }
 ];
 
 export default function BookMove() {
-  const router = useRouter()
+  const router = useRouter();
   const [step, setStep] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     fromLocation: '',
     toLocation: '',
@@ -61,9 +67,8 @@ export default function BookMove() {
   const mapRef = useRef(null);
   const fromAutocompleteRef = useRef(null);
   const toAutocompleteRef = useRef(null);
-  
-  // Used for date validation error message.
   const [dateError, setDateError] = useState('');
+  const [isCalculating, setIsCalculating] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -79,7 +84,6 @@ export default function BookMove() {
       if (selectedDate <= now) {
         setDateError('Please select a future date and time.');
       } else {
-        // Validate business hours: 9:00 to 17:00
         const hour = selectedDate.getHours();
         const minutes = selectedDate.getMinutes();
         if (hour < 9 || hour > 17 || (hour === 17 && minutes > 0)) {
@@ -95,12 +99,11 @@ export default function BookMove() {
     if (step < 3) {
       setStep(step + 1);
     } else {
-      // Final submission: Create a new move via the /api/moves endpoint.
+      setIsLoading(true);
       try {
-        // Parse the moveDate value into date and time strings.
         const moveDateObj = new Date(formData.moveDate);
-        const move_date = moveDateObj.toISOString().split('T')[0]; // YYYY-MM-DD
-        const move_time = moveDateObj.toTimeString().split(' ')[0]; // HH:MM:SS
+        const move_date = moveDateObj.toISOString().split('T')[0];
+        const move_time = moveDateObj.toTimeString().split(' ')[0];
 
         const payload = {
           from_address: formData.fromLocation,
@@ -121,20 +124,20 @@ export default function BookMove() {
         });
 
         if (!res.ok) {
-          console.error('Failed to create move');
-          return;
+          throw new Error('Failed to create move');
         }
-        // Navigate to dashboard after successful creation.
-        setTimeout(() => {
-          router.push('/dashboard');
-        }, 500);
+        
+        router.push(
+          `/dashboard/book-move/success?fromLocation=${encodeURIComponent(formData.fromLocation)}&toLocation=${encodeURIComponent(formData.toLocation)}&moveDate=${encodeURIComponent(formData.moveDate)}&houseType=${encodeURIComponent(formData.houseType)}&price=${encodeURIComponent(price)}&distance=${encodeURIComponent(distance)}`
+        );
       } catch (error) {
         console.error('Error creating move:', error);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
 
-  // Determines whether the "Continue" button should be enabled.
   const canContinue = () => {
     if (step === 1) {
       return formData.fromLocation && formData.toLocation && distance !== null;
@@ -145,7 +148,6 @@ export default function BookMove() {
     return true;
   };
 
-  // Returns the current date and time in the proper format for datetime-local.
   const getMinDateTime = () => {
     const now = new Date();
     const offset = now.getTimezoneOffset();
@@ -158,13 +160,34 @@ export default function BookMove() {
       const mapInstance = new google.maps.Map(mapRef.current, {
         center: { lat: -1.2921, lng: 36.8219 },
         zoom: 12,
-        disableDefaultUI: true
+        disableDefaultUI: true,
+        styles: [
+          {
+            featureType: "all",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#7c93a3" }]
+          },
+          {
+            featureType: "administrative",
+            elementType: "geometry",
+            stylers: [{ visibility: "off" }]
+          },
+          {
+            featureType: "water",
+            elementType: "geometry.fill",
+            stylers: [{ color: "#e8f0f9" }]
+          }
+        ]
       });
 
       const ds = new google.maps.DirectionsService();
       const dr = new google.maps.DirectionsRenderer({
         map: mapInstance,
-        suppressMarkers: true
+        suppressMarkers: true,
+        polylineOptions: {
+          strokeColor: "#0063ff",
+          strokeWeight: 4
+        }
       });
 
       setMap(mapInstance);
@@ -207,6 +230,7 @@ export default function BookMove() {
 
   const handleLocationDetails = async () => {
     if (!directionsService || !directionsRenderer) return;
+    setIsCalculating(true);
 
     const request = {
       origin: formData.fromLocation,
@@ -215,6 +239,7 @@ export default function BookMove() {
     };
 
     directionsService.route(request, (result, status) => {
+      setIsCalculating(false);
       if (status === 'OK') {
         directionsRenderer.setDirections(result);
         const route = result.routes[0].legs[0];
@@ -225,323 +250,416 @@ export default function BookMove() {
   };
 
   return (
-    <div className="h-screen bg-gray-50 flex flex-col p-8 overflow-hidden">
-      {/* Header */}
-      <div className="w-full mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Book Your Move</h1>
-        <p className="text-gray-600 mt-2">Fill in the details below to schedule your move</p>
-      </div>
-
-      {/* Progress Steps */}
-      <div className="w-full mb-8">
-        <div className="flex items-center justify-between relative">
-          <div className="absolute left-0 right-0 top-1/2 h-0.5 bg-gray-200 -translate-y-1/2" />
-          <div
-            className="absolute left-0 top-1/2 h-0.5 bg-[#0063ff] -translate-y-1/2"
-            style={{ width: `${(step - 1) * 50}%` }}
-          />
-          {[1, 2, 3].map((number) => (
-            <div key={number} className="relative z-10 flex flex-col items-center">
-              <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                  step >= number ? 'bg-[#0063ff] text-white' : 'bg-gray-200 text-gray-500'
-                }`}
-              >
-                {number}
-              </div>
-              <span className="text-sm mt-2 font-medium text-gray-600">
-                {number === 1 ? 'Location' : number === 2 ? 'Details' : 'Review'}
-              </span>
-            </div>
-          ))}
+    <div className="min-h-screen bg-gray-50 p-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-4xl mx-auto"
+      >
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Book Your Move</h1>
+          <p className="text-gray-600 mt-2">Fill in the details below to schedule your move</p>
         </div>
-      </div>
 
-      {/* Form Content */}
-      <div className="w-full flex-grow">
-        <Card className="border-none shadow-xl shadow-gray-200/50 h-full">
-          <CardContent className="p-8 h-full flex flex-col justify-between">
-            <div className="flex-grow">
-              {step === 1 && (
-                <div className="space-y-6">
-                  {/* Moving From Input */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Moving From
-                    </label>
-                    <div className="relative">
-                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                      <input
-                        id="fromLocation"
-                        type="text"
-                        name="fromLocation"
-                        value={formData.fromLocation}
-                        onChange={handleInputChange}
-                        placeholder="Enter pickup location"
-                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#0063ff] focus:border-transparent"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Moving To Input */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Moving To
-                    </label>
-                    <div className="relative">
-                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                      <input
-                        id="toLocation"
-                        type="text"
-                        name="toLocation"
-                        value={formData.toLocation}
-                        onChange={handleInputChange}
-                        placeholder="Enter destination location"
-                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#0063ff] focus:border-transparent"
-                      />
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={handleLocationDetails}
-                    disabled={!(formData.fromLocation && formData.toLocation)}
-                    className={`px-4 py-2 bg-brand-500 text-white rounded-md hover:bg-brand-600 ${
-                      !(formData.fromLocation && formData.toLocation)
-                        ? 'opacity-50 cursor-not-allowed'
-                        : ''
-                    }`}
-                  >
-                    Calculate Distance
-                  </button>
-
-                  {/* Map Container */}
-                  <div
-                    ref={mapRef}
-                    className="w-full h-96 rounded-xl border overflow-hidden"
-                    style={{ display: formData.fromLocation && formData.toLocation ? 'block' : 'none' }}
-                  />
-
-                  {distance && (
-                    <div className="flex gap-4 text-sm">
-                      <div className="bg-blue-50 p-3 rounded-lg">
-                        <span className="font-medium">Distance:</span> {distance.toFixed(2)} km
-                      </div>
-                      <div className="bg-blue-50 p-3 rounded-lg">
-                        <span className="font-medium">Price Estimate Available in Next Step</span>
-                      </div>
-                    </div>
+        {/* Progress Steps */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between relative">
+            <div className="absolute left-0 right-0 top-1/2 h-0.5 bg-gray-200 -translate-y-1/2" />
+            <motion.div
+              className="absolute left-0 top-1/2 h-0.5 bg-[#0063ff] -translate-y-1/2"
+              initial={{ width: "0%" }}
+              animate={{ width: `${(step - 1) * 50}%` }}
+              transition={{ duration: 0.5 }}
+            />
+            {[1, 2, 3].map((number) => (
+              <motion.div
+                key={number}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: number * 0.1 }}
+                className="relative z-10 flex flex-col items-center"
+              >
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-300 ${
+                    step >= number
+                      ? 'bg-[#0063ff] text-white'
+                      : 'bg-gray-200 text-gray-500'
+                  }`}
+                >
+                  {step > number ? (
+                    <CheckCircle2 className="h-5 w-5" />
+                  ) : (
+                    number
                   )}
                 </div>
-              )}
-              {step === 2 && (
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Moving Date & Time
-                    </label>
-                    <div className="relative">
-                      <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                      <input
-                        type="datetime-local"
-                        name="moveDate"
-                        value={formData.moveDate}
-                        onChange={handleInputChange}
-                        min={getMinDateTime()}
-                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#0063ff] focus:border-transparent"
-                      />
+                <span className="text-sm mt-2 font-medium text-gray-600">
+                  {number === 1 ? 'Location' : number === 2 ? 'Details' : 'Review'}
+                </span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Form Content */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={step}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Card className="border-none shadow-xl shadow-gray-200/50">
+              <CardContent className="p-8">
+                {step === 1 && (
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Moving From
+                      </label>
+                      <div className="relative">
+                        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <input
+                          id="fromLocation"
+                          type="text"
+                          name="fromLocation"
+                          value={formData.fromLocation}
+                          onChange={handleInputChange}
+                          placeholder="Enter pickup location"
+                          className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#0063ff] focus:border-transparent"
+                        />
+                      </div>
                     </div>
-                    {dateError && (
-                      <p className="text-red-500 text-sm mt-1">{dateError}</p>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Moving To
+                      </label>
+                      <div className="relative">
+                        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <input
+                          id="toLocation"
+                          type="text"
+                          name="toLocation"
+                          value={formData.toLocation}
+                          onChange={handleInputChange}
+                          placeholder="Enter destination location"
+                          className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#0063ff] focus:border-transparent"
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={handleLocationDetails}
+                      disabled={!(formData.fromLocation && formData.toLocation) || isCalculating}
+                      className={`w-full px-4 py-3 rounded-xl text-white font-medium flex items-center justify-center gap-2 transition-all ${
+                        !(formData.fromLocation && formData.toLocation) || isCalculating
+                          ? 'bg-gray-300 cursor-not-allowed'
+                          : 'bg-[#0063ff] hover:bg-[#0055dd] shadow-lg hover:shadow-xl'
+                      }`}
+                    >
+                      {isCalculating ? (
+                        <>
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                          >
+                            <Truck className="h-5 w-5" />
+                          </motion.div>
+                          Calculating Route...
+                        </>
+                      ) : (
+                        <>
+                          <Truck className="h-5 w-5" />
+                          Calculate Route
+                        </>
+                      )}
+                    </button>
+
+                    <div
+                      ref={mapRef}
+                      className="w-full h-96 rounded-xl border overflow-hidden shadow-lg transition-all duration-300"
+                      style={{
+                        opacity: formData.fromLocation && formData.toLocation ? 1 : 0.5
+                      }}
+                    />
+
+                    {distance && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="grid grid-cols-2 gap-4"
+                      >
+                        <div className="bg-blue-50 p-4 rounded-xl">
+                          <div className="flex items-center gap-2 mb-1">
+                            <Truck className="h-5 w-5 text-[#0063ff]" />
+                            <span className="font-medium text-gray-900">Distance</span>
+                          </div>
+                          <p className="text-2xl font-bold text-[#0063ff]">
+                            {distance.toFixed(1)} km
+                          </p>
+                        </div>
+                        <div className="bg-green-50 p-4 rounded-xl">
+                          <div className="flex items-center gap-2 mb-1">
+                            <Clock className="h-5 w-5 text-green-600" />
+                            <span className="font-medium text-gray-900">Est. Duration</span>
+                          </div>
+                          <p className="text-2xl font-bold text-green-600">
+                            {Math.ceil(distance / 30)} hr
+                          </p>
+                        </div>
+                      </motion.div>
                     )}
                   </div>
+                )}
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-4">
-                      House Type
-                    </label>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {houseTypes.map((type) => (
-                        <div
-                          key={type.id}
-                          className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                            formData.houseType === type.id
-                              ? 'border-[#0063ff] bg-blue-50'
-                              : 'border-gray-200 hover:border-gray-300'
-                          }`}
-                          onClick={() =>
-                            handleInputChange({
-                              target: { name: 'houseType', value: type.id }
-                            })
-                          }
+                {step === 2 && (
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Moving Date & Time
+                      </label>
+                      <div className="relative">
+                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <input
+                          type="datetime-local"
+                          name="moveDate"
+                          value={formData.moveDate}
+                          onChange={handleInputChange}
+                          min={getMinDateTime()}
+                          className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#0063ff] focus:border-transparent"
+                        />
+                      </div>
+                      {dateError && (
+                        <motion.p
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="text-red-500 text-sm mt-2 flex items-center gap-2"
                         >
-                          <h3 className="font-medium text-gray-900">{type.name}</h3>
-                          <p className="text-sm text-gray-500 mt-1">{type.description}</p>
+                          <Info className="h-4 w-4" />
+                          {dateError}
+                        </motion.p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-4">
+                        House Type
+                      </label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {houseTypes.map((type) => {
+                          const Icon = type.icon;
+                          return (
+                            <motion.div
+                              key={type.id}
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
+                              className={`p-6 rounded-xl border-2 cursor-pointer transition-all ${
+                                formData.houseType === type.id
+                                  ? 'border-[#0063ff] bg-blue-50 shadow-lg'
+                                  : 'border-gray-200 hover:border-gray-300'
+                              }`}
+                              onClick={() =>
+                                handleInputChange({
+                                  target: { name: 'houseType', value: type.id }
+                                })
+                              }
+                            >
+                              <div className="flex items-center gap-4">
+                                <div className={`w-12 h-12 rounded-xl ${
+                                  formData.houseType === type.id
+                                    ? 'bg-[#0063ff]'
+                                    : 'bg-gray-100'
+                                } flex items-center justify-center transition-colors`}>
+                                  <Icon className={`h-6 w-6 ${
+                                    formData.houseType === type.id
+                                      ? 'text-white'
+                                      : 'text-gray-500'
+                                  }`} />
+                                </div>
+                                <div>
+                                  <h3 className="font-medium text-gray-900">{type.name}</h3>
+                                  <p className="text-sm text-gray-500">{type.description}</p>
+                                </div>
+                              </div>
+                            </motion.div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {price && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-gradient-to-r from-[#0063ff] to-[#001a4d] p-6 rounded-xl text-white"
+                      >
+                        <div className="flex items-start gap-4">
+                          <div className="p-3 bg-white/10 rounded-xl">
+                            <Package className="h-6 w-6" />
+                          </div>
+                          <div>
+                            <p className="text-sm text-blue-200">Estimated Total</p>
+                            <p className="text-3xl font-bold mt-1">
+                              Ksh {price.toLocaleString()}
+                            </p>
+                            <p className="text-sm text-blue-200 mt-2">
+                              Includes base fee and distance charges
+                            </p>
+                          </div>
                         </div>
-                      ))}
+                      </motion.div>
+                    )}
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Additional Notes
+                      </label>
+                      <textarea
+                        name="additionalNotes"
+                        value={formData.additionalNotes}
+                        onChange={handleInputChange}
+                        rows={4}
+                        placeholder="Any special requirements or instructions..."
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#0063ff] focus:border-transparent"
+                      />
                     </div>
                   </div>
+                )}
 
-                  {price && (
-                    <div className="bg-green-50 p-4 rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <Package className="h-5 w-5 text-green-600" />
-                        <div>
-                          <p className="font-medium text-green-700">
-                            Estimated Total: Ksh {price.toLocaleString()}
-                          </p>
-                          <p className="text-sm text-green-600 mt-1">
-                            (Includes base fee and distance charges)
-                          </p>
+                {step === 3 && (
+                  <div className="space-y-8">
+                    <div className="bg-gradient-to-r from-[#0063ff] to-[#001a4d] rounded-xl p-6 text-white">
+                      <h3 className="text-xl font-semibold mb-6">Move Summary</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                          <div className="flex items-start gap-3">
+                            <div className="p-2 bg-white/10 rounded-lg">
+                              <MapPin className="h-5 w-5" />
+                            </div>
+                            <div>
+                              <p className="text-sm text-blue-200">From</p>
+                              <p className="font-medium">{formData.fromLocation}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-3">
+                            <div className="p-2 bg-white/10 rounded-lg">
+                              <MapPin className="h-5 w-5" />
+                            </div>
+                            <div>
+                              <p className="text-sm text-blue-200">To</p>
+                              <p className="font-medium">{formData.toLocation}</p>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  )}
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Additional Notes
-                    </label>
-                    <textarea
-                      name="additionalNotes"
-                      value={formData.additionalNotes}
-                      onChange={handleInputChange}
-                      rows={4}
-                      placeholder="Any special requirements or instructions..."
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#0063ff] focus:border-transparent"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {step === 3 && (
-                <div className="space-y-8">
-                  <div className="bg-blue-50 rounded-xl p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Move Summary</h3>
-
-                    <div className="space-y-4">
-                      <div className="flex items-start gap-3">
-                        <MapPin className="h-5 w-5 text-[#0063ff] mt-1" />
-                        <div>
-                          <p className="text-sm text-gray-500">From</p>
-                          <p className="font-medium">{formData.fromLocation}</p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-3">
-                        <MapPin className="h-5 w-5 text-[#0063ff] mt-1" />
-                        <div>
-                          <p className="text-sm text-gray-500">To</p>
-                          <p className="font-medium">{formData.toLocation}</p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-3">
-                        <Calendar className="h-5 w-5 text-[#0063ff] mt-1" />
-                        <div>
-                          <p className="text-sm text-gray-500">Moving Date & Time</p>
-                          <p className="font-medium">{formData.moveDate}</p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-3">
-                        <Package className="h-5 w-5 text-[#0063ff] mt-1" />
-                        <div>
-                          <p className="text-sm text-gray-500">House Type</p>
-                          <p className="font-medium">
-                            {houseTypes.find(t => t.id === formData.houseType)?.name}
-                          </p>
+                        <div className="space-y-4">
+                          <div className="flex items-start gap-3">
+                            <div className="p-2 bg-white/10 rounded-lg">
+                              <Calendar className="h-5 w-5" />
+                            </div>
+                            <div>
+                              <p className="text-sm text-blue-200">Moving Date & Time</p>
+                              <p className="font-medium">
+                                {new Date(formData.moveDate).toLocaleString()}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-3">
+                            <div className="p-2 bg-white/10 rounded-lg">
+                              <Package className="h-5 w-5" />
+                            </div>
+                            <div>
+                              <p className="text-sm text-blue-200">House Type</p>
+                              <p className="font-medium">
+                                {houseTypes.find(t => t.id === formData.houseType)?.name}
+                              </p>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       {price && (
-                        <div className="flex items-start gap-3">
-                          <Package className="h-5 w-5 text-[#0063ff] mt-1" />
-                          <div>
-                            <p className="text-sm text-gray-500">Estimated Cost</p>
-                            <p className="font-medium">Ksh {price.toLocaleString()}</p>
-                            <p className="text-xs text-gray-500 mt-1">
-                              Includes all charges and taxes
-                            </p>
+                        <div className="mt-6 pt-6 border-t border-white/10">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-sm text-blue-200">Total Cost</p>
+                              <p className="text-3xl font-bold mt-1">
+                                Ksh {price.toLocaleString()}
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-sm text-blue-200">Distance</p>
+                              <p className="text-xl font-medium mt-1">
+                                {distance.toFixed(1)} km
+                              </p>
+                            </div>
                           </div>
                         </div>
                       )}
                     </div>
-                  </div>
 
-                  <div className="bg-gray-50 rounded-xl p-6">
-                    <div className="flex items-start gap-3">
-                      <Info className="h-5 w-5 text-gray-400 mt-1" />
-                      <p className="text-sm text-gray-500">
-                        By proceeding, you agree to our terms of service and privacy policy.
-                        We will match you with the best available movers for your needs.
-                      </p>
+                    <div className="bg-blue-50 rounded-xl p-6">
+                      <div className="flex items-start gap-3">
+                        <Info className="h-5 w-5 text-[#0063ff] mt-1" />
+                        <div>
+                          <p className="font-medium text-gray-900 mb-2">
+                            Before You Confirm
+                          </p>
+                          <ul className="space-y-2 text-sm text-gray-600">
+                            <li>• We will match you with verified professional movers</li>
+                            <li>• You will receive a confirmation email with booking details</li>
+                            <li>• Our team will contact you to confirm move details</li>
+                            <li>• Payment will be processed after move confirmation</li>
+                          </ul>
+                        </div>
+                      </div>
                     </div>
                   </div>
+                )}
+
+                {/* Navigation Buttons */}
+                <div className="mt-8 flex justify-end gap-4">
+                  {step > 1 && (
+                    <button
+                      onClick={() => setStep(step - 1)}
+                      className="px-6 py-3 rounded-xl text-gray-600 hover:text-gray-900 transition-colors flex items-center gap-2"
+                    >
+                      Back
+                    </button>
+                  )}
+                  <button
+                    onClick={handleContinue}
+                    disabled={!canContinue() || isLoading}
+                    className={`px-6 py-3 rounded-xl text-white font-medium flex items-center gap-2 transition-all ${
+                      canContinue() && !isLoading
+                        ? 'bg-[#0063ff] hover:bg-[#0055dd] shadow-lg hover:shadow-xl'
+                        : 'bg-gray-300 cursor-not-allowed'
+                    }`}
+                  >
+                    {isLoading ? (
+                      <>
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                        >
+                          <Truck className="h-5 w-5" />
+                        </motion.div>
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        {step === 3 ? 'Confirm Booking' : 'Continue'}
+                        <ArrowRight className="h-5 w-5" />
+                      </>
+                    )}
+                  </button>
                 </div>
-              )}
-            </div>
-
-            {/* Navigation Buttons */}
-            <div className="mt-8 flex justify-end">
-              {step > 1 && (
-                <button
-                  onClick={() => setStep(step - 1)}
-                  className="mr-4 px-6 py-3 rounded-xl text-gray-600 hover:text-gray-900 transition-colors"
-                >
-                  Back
-                </button>
-              )}
-              <button
-                onClick={async () => {
-                  if (step < 3) {
-                    setStep(step + 1);
-                  } else {
-                    // Final submission: Create a move via the /api/moves endpoint.
-                    try {
-                      // Extract move date and time parts.
-                      const moveDateObj = new Date(formData.moveDate);
-                      const move_date = moveDateObj.toISOString().split('T')[0]; // YYYY-MM-DD
-                      const move_time = moveDateObj.toTimeString().split(' ')[0]; // HH:MM:SS
-
-                      const payload = {
-                        from_address: formData.fromLocation,
-                        to_address: formData.toLocation,
-                        move_date,
-                        move_time,
-                        estimated_price: price,
-                        distance: distance
-                      };
-
-                      const res = await fetch('/api/moves', {
-                        method: 'POST',
-                        headers: {
-                          'Content-Type': 'application/json'
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify(payload)
-                      });
-
-                      if (!res.ok) {
-                        console.error('Failed to create move');
-                        return;
-                      }
-                      router.push('/dashboard');
-                    } catch (error) {
-                      console.error('Error creating move:', error);
-                    }
-                  }
-                }}
-                disabled={!canContinue()}
-                className={`px-6 py-3 rounded-xl text-white flex items-center gap-2 ${
-                  canContinue() ? 'bg-[#0063ff] hover:bg-[#0055dd]' : 'bg-gray-400 cursor-not-allowed'
-                }`}
-              >
-                {step === 3 ? 'Confirm Booking' : 'Continue'}
-                <ArrowRight className="h-5 w-5" />
-              </button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </AnimatePresence>
+      </motion.div>
     </div>
   );
 }

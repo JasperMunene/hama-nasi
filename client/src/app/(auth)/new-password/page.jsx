@@ -1,12 +1,13 @@
 "use client";
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/elements/button/Button";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function ResetPassword() {
+// Child component that uses useSearchParams()
+function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const resetToken = searchParams.get("token");
@@ -28,7 +29,7 @@ export default function ResetPassword() {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/auth/reset-password", {
+      const response = await fetch("/api/auth/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ reset_token: resetToken, new_password: newPassword }),
@@ -106,5 +107,14 @@ export default function ResetPassword() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Parent component wrapping the form in Suspense
+export default function ResetPassword() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResetPasswordForm />
+    </Suspense>
   );
 }

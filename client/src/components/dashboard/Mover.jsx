@@ -11,24 +11,32 @@ export default function MoverDash() {
   const [userInventory, setUserInventory] = useState([]);
   const [loadingMoves, setLoadingMoves] = useState(true);
   const [loadingInventory, setLoadingInventory] = useState(true);
+  const [userName, setUserName] = useState(''); 
+  const [movers, setMovers] = useState([]);
 
   // Hardcoded recommended movers for now.
-  const recommendedMovers = [
-    {
-      name: "Swift Movers Ltd",
-      rating: 4.8,
-      reviews: 128,
-      image: "https://cdn.prod.website-files.com/66a6ba5e0799a98c7cb5e8e2/66ac39307d23943c324547a1_Team-6-p-500.jpg"
-    },
-    {
-      name: "Pro Movers Kenya",
-      rating: 4.7,
-      reviews: 96,
-      image: "https://cdn.prod.website-files.com/66a6ba5e0799a98c7cb5e8e2/66ac38e37a7a9145deff15f5_Team-2-p-500.jpg"
-    }
-  ];
+  
 
   useEffect(() => {
+    // Fetch current user info from /api/user
+    const fetchUser = async () => {
+      try {
+        const res = await fetch('/api/user', {
+          method: 'GET',
+          credentials: 'include'
+        });
+        if (res.ok) {
+          const data = await res.json();
+          // Assuming your API returns a field named "name"
+          setUserName(data.name);
+        } else {
+          console.error('Failed to fetch user data');
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
     // Fetch moves
     const fetchMoves = async () => {
       try {
@@ -72,8 +80,29 @@ export default function MoverDash() {
       }
     };
 
+    const fetchMovers = async () => {
+      try {
+        const res = await fetch('/api/movers', {
+          method: 'GET',
+          credentials: 'include'
+        });
+        if (res.ok) {
+          const data = await res.json();
+          // Sort movers by rating descending and take the top 4
+          const sortedMovers = data.movers.sort((a, b) => b.rating - a.rating).slice(0, 4);
+          setMovers(sortedMovers);
+        } else {
+          console.error('Failed to fetch movers');
+        }
+      } catch (error) {
+        console.error('Error fetching movers:', error);
+      }
+    };
+
+    fetchUser();
     fetchMoves();
     fetchInventory();
+    fetchMovers();
   }, []);
 
   // Format the move date (e.g. "March 15")
@@ -96,7 +125,9 @@ export default function MoverDash() {
       {/* Header Section */}
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Welcome back, Sarah! 👋</h1>
+        <h1 className="text-3xl font-bold text-gray-900">
+            Welcome back, {userName || 'User'}! 👋
+          </h1>
           <p className="text-gray-600 mt-1">Let's plan your next move</p>
         </div>
         <Link
@@ -255,21 +286,20 @@ export default function MoverDash() {
             <CardContent className="p-6">
               <h2 className="text-xl font-semibold mb-6">Recommended Movers</h2>
               <div className="space-y-4">
-                {recommendedMovers.map((mover, index) => (
+                {movers.map((mover, index) => (
                   <div key={index} className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors">
                     <Image
                       src={mover.image}
-                      alt={mover.name}
+                      alt={mover.company_name}
                       width={48}
                       height={48}
                       className="rounded-full"
                     />
                     <div className="flex-1">
-                      <h3 className="font-medium">{mover.name}</h3>
+                      <h3 className="font-medium">{mover.company_name}</h3>
                       <div className="flex items-center gap-2 mt-1">
                         <Star className="h-4 w-4 text-yellow-400 fill-current" />
                         <span className="text-sm text-gray-600">{mover.rating}</span>
-                        <span className="text-sm text-gray-400">({mover.reviews} reviews)</span>
                       </div>
                     </div>
                     <ChevronRight className="h-5 w-5 text-gray-400" />
@@ -279,32 +309,6 @@ export default function MoverDash() {
             </CardContent>
           </Card>
 
-          {/* Recent Activity */}
-          <Card>
-            <CardContent className="p-6">
-              <h2 className="text-xl font-semibold mb-6">Recent Activity</h2>
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <div className="p-2 bg-blue-100 rounded-full">
-                    <Package className="h-4 w-4 text-[#0063ff]" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium">Added new items to inventory</p>
-                    <p className="text-xs text-gray-500">2 hours ago</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="p-2 bg-green-100 rounded-full">
-                    <Truck className="h-4 w-4 text-green-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium">Updated move schedule</p>
-                    <p className="text-xs text-gray-500">Yesterday</p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>

@@ -12,7 +12,7 @@ import {
   UserCircle,
   LogOut,
   Users,
-  Activity,
+  SendToBack,
   Calendar,
   Package,
 } from "lucide-react";
@@ -21,11 +21,11 @@ import { useRouter } from "next/navigation";
 import Button from "@/components/elements/button/Button";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
 
 export function AppSidebar() {
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeItem, setActiveItem] = useState("home");
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [role, setRole] = useState(null);
 
@@ -51,11 +51,27 @@ export function AppSidebar() {
     fetchUser();
   }, [router]);
 
-  
-
+  // Logout logic using /api/auth/logout
+  const handleLogout = async () => {
+    try {
+      const res = await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (res.ok) {
+        router.push("/login");
+      } else {
+        console.error("Logout failed");
+      }
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
 
   // Define navigation sections based on the user's role.
-  // For a moving company, we show just the Dashboard and a Movers link.
   const menuSections =
     role === "Moving Company"
       ? [
@@ -78,10 +94,10 @@ export function AppSidebar() {
             items: [
               { id: "home", href: "/dashboard", icon: Home, label: "Dashboard" },
               {
-                id: "activity",
-                href: "/dashboard/activity",
-                icon: Activity,
-                label: "Activity",
+                id: "moves",
+                href: "/dashboard/moves",
+                icon: SendToBack,
+                label: "Moves",
               },
             ],
           },
@@ -121,19 +137,21 @@ export function AppSidebar() {
           },
         ];
 
-  function handleNavigation(item) {
-    setActiveItem(item);
+  // When a nav item is clicked, just close any open menus.
+  function handleNavigation() {
     setIsMobileMenuOpen(false);
     setIsProfileMenuOpen(false);
   }
 
   function NavItem({ href, icon: Icon, id, children }) {
-    const isActive = activeItem === id;
+    const pathname = usePathname();
+    // Use an exact match; if you want sub-routes to count as active, you could use pathname.startsWith(href)
+    const isActive = pathname === href;
 
     return (
       <Link
         href={href}
-        onClick={() => handleNavigation(id)}
+        onClick={handleNavigation}
         className={cn(
           "flex items-center px-4 py-3 text-sm rounded-xl transition-all group relative",
           isActive
@@ -265,7 +283,7 @@ export function AppSidebar() {
                       Switch Account
                     </button>
                     <button
-                      onClick={() => console.log("Logging Out")}
+                      onClick={handleLogout}
                       className="flex items-center w-full text-left px-3 py-2.5 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors"
                     >
                       <LogOut className="h-5 w-5 mr-3 text-red-600" />

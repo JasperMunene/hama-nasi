@@ -1,4 +1,5 @@
 import Verification from "@/components/auth/Verification";
+import { Suspense } from "react";
 
 
 
@@ -8,5 +9,9 @@ export const metadata = {
 };
 
 export default function Verify() {
-  return <Verification />;
+  return (
+    <Suspense>
+      <Verification />
+    </Suspense>
+  );
 }
