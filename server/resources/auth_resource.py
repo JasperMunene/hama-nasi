@@ -86,12 +86,14 @@ class VerifyOTPResource(Resource):
             "message": "Email verified successfully",
             "access_token": access_token
         }, 200)
+        expires = datetime.datetime.now() + datetime.timedelta(days=1)
         response.set_cookie(
             'access_token',
             access_token,
             httponly=True,
             secure=True,
-            samesite='None'
+            samesite='None',
+            expires=expires,
         )
         return response
 
@@ -129,12 +131,14 @@ class LoginResource(Resource):
                 expires=expires,
             )
         else:
+            expires = datetime.datetime.now() + datetime.timedelta(days=1)
             response.set_cookie(
                 'access_token',
                 access_token,
                 httponly=True,
                 secure=True,
-                samesite='None'
+                samesite='None',
+                expires = expires,
             )
         return response
 
@@ -187,12 +191,15 @@ class AuthorizeGoogle(Resource):
 
         access_token = create_access_token(identity=str(user.id))
         response = make_response(redirect("http://localhost:3000/onboarding"))
+
+        expires = datetime.datetime.now() + datetime.timedelta(days=1)
         response.set_cookie(
             'access_token',
             access_token,
             httponly=True,
             secure=True,
-            samesite='None'
+            samesite='None',
+            expires=expires,
         )
         return response
 
