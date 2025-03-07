@@ -86,7 +86,7 @@ This project is licensed under the MIT License. See the LICENSE file for details
 For inquiries or support, feel free to reach out:
 
 📧 contact@hamanasi.com
-🌐 gmail.com
+
 
 
 
