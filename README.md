@@ -8,7 +8,7 @@ A full-stack movers application built with Next.js, Tailwind CSS, Lucide-React, 
 - Database: PostgreSQL
 - Authentication: OAuth
 
-## ✨ Features
+##  Features
 . User Dashboard – Manage personal moving requests
 . Company Dashboard – View and manage customer orders
 . Authentication System – Secure user login 
