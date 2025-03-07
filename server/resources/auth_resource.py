@@ -190,7 +190,7 @@ class AuthorizeGoogle(Resource):
             db.session.commit()
 
         access_token = create_access_token(identity=str(user.id))
-        response = make_response(redirect("http://localhost:3000/onboarding"))
+        response = make_response(redirect("https://hama-nasi.vercel.app/onboarding"))
 
         expires = datetime.datetime.now() + datetime.timedelta(days=1)
         response.set_cookie(

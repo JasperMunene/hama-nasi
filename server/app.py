@@ -43,7 +43,9 @@ app.json.compact = False
 bcrypt.init_app(app)
 oauth.init_app(app)
 
-CORS(app, supports_credentials=True, resources={r"/*": {"origins": "http://localhost:3000"}})
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": "https://hama-nasi.vercel.app/"}})
+
+
 migrate = Migrate(app, db)
 db.init_app(app)
 jwt = JWTManager(app)
