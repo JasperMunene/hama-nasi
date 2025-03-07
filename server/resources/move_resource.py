@@ -104,3 +104,19 @@ class SingleMove(Resource):
         except Exception as e:
             current_app.logger.error(f"Error fetching move {move_id} for user {user_id}: {str(e)}")
             return {"message": "Internal server error"}, 500
+
+class SingleMoveResource(Resource):
+    @jwt_required()
+    def get(self, move_id):
+        try:
+            # Fetch the specific move that belongs to the current user.
+            move = Move.query.filter_by(id=move_id).first()
+            if not move:
+                return {"message": "Move not found"}, 404
+
+            # Serialize the move while excluding relationships that may cause recursion.
+            move_data = move.to_dict(rules=("-bookings", "-quotes", "-user"))
+            return {"move": move_data}, 200
+        except Exception as e:
+            current_app.logger.error(f"Error fetching move {move_id}: {str(e)}")
+            return {"message": "Internal server error"}, 500
