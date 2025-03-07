@@ -1,6 +1,6 @@
 from flask import current_app
 from flask_restful import Resource, reqparse
-from models import db, Quote, User
+from models import db, Quote, User, Move
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 class QuoteResource(Resource):
@@ -68,4 +68,28 @@ class QuoteResource(Resource):
             return {'quotes': quotes_list}, 200
         except Exception as e:
             current_app.logger.error(f"Error retrieving quotes: {e}")
+            return {'message': 'Failed to retrieve quotes'}, 500
+
+class MoveQuotesResource(Resource):
+    @jwt_required()
+    def get(self, move_id):
+        try:
+            # Ensure the move exists
+            move = Move.query.get(move_id)
+            if not move:
+                return {'message': 'Move not found'}, 404
+
+            # Retrieve all quotes for the specified move
+            quotes = Quote.query.filter_by(move_id=move_id).all()
+
+            # Serialize the quotes with selected fields
+            quotes_list = [
+                quote.to_dict(only=[
+                    'id', 'mover_id', 'move_id', 'quote_amount', 'details', 'created_at', 'updated_at'
+                ]) for quote in quotes
+            ]
+
+            return {'quotes': quotes_list}, 200
+        except Exception as e:
+            current_app.logger.error(f"Error retrieving quotes for move {move_id}: {e}")
             return {'message': 'Failed to retrieve quotes'}, 500

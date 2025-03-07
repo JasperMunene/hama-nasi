@@ -93,10 +93,7 @@ export function AppSidebar() {
               { id: "bids", href: "/dashboard/bids", icon: ListCheck, label: "Bids" },
             ],
           },
-          {
-            title: "Account",
-            items: [{ id: "settings", href: "/dashboard/settings", icon: Settings2, label: "Settings" }],
-          },
+          
         ];
 
   return (

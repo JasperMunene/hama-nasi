@@ -1,49 +1,81 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
-import  Button  from '@/components/elements/button/Button';
+import Button from '@/components/elements/button/Button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Star, Clock, CheckCircle, X, ArrowRight, Shield, Calendar, DollarSign, Truck, MessageSquare } from 'lucide-react';
+import { Truck, DollarSign, Clock, Calendar, Shield, Star } from 'lucide-react';
 import Image from 'next/image';
 
 export default function BidsPage() {
   const [selectedBidId, setSelectedBidId] = useState(null);
+  const [latestMove, setLatestMove] = useState(null);
+  const [quotes, setQuotes] = useState([]);
+  const router = useRouter();
 
-  const bids = [
-    {
-      id: 1,
-      mover: {
-        name: "Swift Movers Ltd",
-        rating: 4.8,
-        reviews: 128,
-        verified: true,
-        image: "https://images.unsplash.com/photo-1607990283143-e81e7a2c9349?w=400&h=400&auto=format&fit=crop&q=80"
-      },
-      price: "KES 25,000",
-      timeEstimate: "4-5 hours",
-      availableDate: "March 15, 2025",
-      description: "Professional moving service with experienced team. We handle all items with care and provide full insurance coverage.",
-      services: ["Packing", "Loading", "Transport", "Unloading", "Insurance"],
-      status: "pending"
-    },
-    {
-      id: 2,
-      mover: {
-        name: "Pro Movers Kenya",
-        rating: 4.7,
-        reviews: 96,
-        verified: true,
-        image: "https://images.unsplash.com/photo-1635350736475-c8cef4b21906?w=400&h=400&auto=format&fit=crop&q=80"
-      },
-      price: "KES 22,500",
-      timeEstimate: "5-6 hours",
-      availableDate: "March 16, 2025",
-      description: "Efficient and reliable moving service. We specialize in residential moves and have a great track record.",
-      services: ["Loading", "Transport", "Unloading", "Insurance"],
-      status: "pending"
+  // Fetch latest move
+  useEffect(() => {
+    fetch('/api/move')
+      .then((response) => response.json())
+      .then((data) => {
+        // Determine the latest move by comparing created_at timestamps
+        const moves = data.moves;
+        const latest = moves.reduce((prev, curr) => {
+          return new Date(curr.created_at) > new Date(prev.created_at) ? curr : prev;
+        }, moves[0]);
+        setLatestMove(latest);
+      })
+      .catch((error) => console.error('Error fetching moves:', error));
+  }, []);
+
+  // Once the latest move is fetched, retrieve its related quotes
+  useEffect(() => {
+    if (latestMove) {
+      fetch(`/api/moves/${latestMove.id}/quotes`)
+        .then((res) => res.json())
+        .then((data) => {
+          setQuotes(data.quotes);
+        })
+        .catch((error) => console.error('Error fetching quotes:', error));
     }
-  ];
+  }, [latestMove]);
+
+  // Handler to accept a bid: updates the move's approved_price and then redirects
+  const handleAcceptBid = async (quote) => {
+    try {
+      const response = await fetch(`/api/moves/${latestMove.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          approved_price: quote.quote_amount,
+        }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        // Update latest move state with the new approved_price
+        setLatestMove(data.move);
+        setSelectedBidId(quote.id);
+        // Redirect to the success page with query parameters
+        router.push(
+          `/dashboard/bids/booking-success?fromLocation=${encodeURIComponent(latestMove.from_address)}&toLocation=${encodeURIComponent(latestMove.to_address)}&moveDate=${encodeURIComponent(latestMove.move_date)}&price=${encodeURIComponent(quote.quote_amount)}&distance=${encodeURIComponent(latestMove.distance)}`
+        );
+      } else {
+        console.error('Error accepting bid:', data.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  if (!latestMove) {
+    return <div>Loading...</div>;
+  }
+
+  // Disable all Accept Bid buttons if a bid has already been accepted (approved_price is set)
+  const bidDisabled = latestMove.approved_price !== null;
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -52,11 +84,19 @@ export default function BidsPage() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Moving Bids</h1>
-            <p className="text-gray-600 mt-1">Compare and choose the best mover for your needs</p>
+            <p className="text-gray-600 mt-1">
+              Compare and choose the best mover for your needs
+            </p>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-sm text-gray-500">Move Date:</span>
-            <span className="font-medium">March 15, 2025</span>
+            <span className="font-medium">
+              {new Date(latestMove.move_date).toLocaleDateString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric',
+              })}
+            </span>
           </div>
         </div>
       </div>
@@ -66,31 +106,41 @@ export default function BidsPage() {
         <Card>
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* From Address */}
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-blue-50 rounded-lg">
                   <Truck className="w-6 h-6 text-[#0063ff]" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">From</p>
-                  <p className="font-medium">Westlands, Nairobi</p>
+                  <p className="font-medium">{latestMove.from_address}</p>
                 </div>
               </div>
+              {/* To Address */}
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-green-50 rounded-lg">
                   <Truck className="w-6 h-6 text-green-600" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">To</p>
-                  <p className="font-medium">Kilimani, Nairobi</p>
+                  <p className="font-medium">{latestMove.to_address}</p>
                 </div>
               </div>
+              {/* Estimated Price */}
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-yellow-50 rounded-lg">
                   <DollarSign className="w-6 h-6 text-yellow-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Budget Range</p>
-                  <p className="font-medium">KES 20,000 - 30,000</p>
+                  <p className="text-sm text-gray-500">Estimated Price</p>
+                  <p className="font-medium">
+                    KES {latestMove.estimated_price.toLocaleString()}
+                  </p>
+                  {latestMove.approved_price && (
+                    <p className="text-sm text-green-600">
+                      Approved Price: KES {latestMove.approved_price.toLocaleString()}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -102,109 +152,78 @@ export default function BidsPage() {
       <div className="max-w-7xl mx-auto">
         <Tabs defaultValue="all" className="w-full">
           <TabsList className="mb-6">
-            <TabsTrigger value="all">All Bids ({bids.length})</TabsTrigger>
+            <TabsTrigger value="all">All Bids ({quotes.length})</TabsTrigger>
             <TabsTrigger value="shortlisted">Shortlisted</TabsTrigger>
             <TabsTrigger value="declined">Declined</TabsTrigger>
           </TabsList>
 
           <TabsContent value="all" className="space-y-6">
-            {bids.map((bid) => (
-              <Card 
-                key={bid.id} 
-                className={`hover:border-blue-200 transition-colors ${
-                  selectedBidId === bid.id ? 'border-[#0063ff]' : ''
-                }`}
-              >
-                <CardContent className="p-6">
-                  <div className="flex flex-col lg:flex-row gap-6">
-                    {/* Mover Info */}
-                    <div className="lg:w-1/3">
-                      <div className="flex items-start gap-4">
-                        <Image
-                          src={bid.mover.image}
-                          alt={bid.mover.name}
-                          width={64}
-                          height={64}
-                          className="rounded-lg"
-                        />
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-semibold text-lg">{bid.mover.name}</h3>
-                            {bid.mover.verified && (
-                              <Shield className="w-4 h-4 text-[#0063ff]" />
-                            )}
+            {quotes.length > 0 ? (
+              quotes.map((quote) => (
+                <Card
+                  key={quote.id}
+                  className={`hover:border-blue-200 transition-colors ${
+                    selectedBidId === quote.id ? 'border-[#0063ff]' : ''
+                  }`}
+                >
+                  <CardContent className="p-6">
+                    <div className="flex flex-col lg:flex-row gap-6">
+                      {/* Quote (Bid) Info */}
+                      <div className="lg:w-1/3">
+                        <div className="flex items-start gap-4">
+                          {/* Placeholder for mover image/icon */}
+                          <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
+                            <Truck className="w-8 h-8 text-gray-500" />
                           </div>
-                          <div className="flex items-center gap-2 mt-1">
-                            <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                            <span className="font-medium">{bid.mover.rating}</span>
-                            <span className="text-gray-500">({bid.mover.reviews} reviews)</span>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h3 className="font-semibold text-lg">
+                                Mover ID: {quote.mover_id}
+                              </h3>
+                              {/* Optionally, include mover verification icon */}
+                              {/* <Shield className="w-4 h-4 text-[#0063ff]" /> */}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Quote Details */}
+                      <div className="lg:w-2/3">
+                        <div className="space-y-4">
+                          <div>
+                            <p className="text-sm text-gray-500">Price Quote</p>
+                            <p className="text-2xl font-bold text-gray-900">
+                              KES {Number(quote.quote_amount).toLocaleString()}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-500">Quote Details</p>
+                            <p className="text-md font-medium text-gray-700">
+                              {quote.details}
+                            </p>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    {/* Bid Details */}
-                    <div className="lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-4">
-                        <div>
-                          <p className="text-sm text-gray-500">Price Quote</p>
-                          <p className="text-2xl font-bold text-gray-900">{bid.price}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-500">Time Estimate</p>
-                          <div className="flex items-center gap-2">
-                            <Clock className="w-4 h-4 text-gray-400" />
-                            <p className="font-medium">{bid.timeEstimate}</p>
-                          </div>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-500">Available Date</p>
-                          <div className="flex items-center gap-2">
-                            <Calendar className="w-4 h-4 text-gray-400" />
-                            <p className="font-medium">{bid.availableDate}</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="space-y-4">
-                        <div>
-                          <p className="text-sm text-gray-500">Services Included</p>
-                          <div className="flex flex-wrap gap-2 mt-2">
-                            {bid.services.map((service, index) => (
-                              <span
-                                key={index}
-                                className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
-                              >
-                                {service}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                        <p className="text-sm text-gray-600">{bid.description}</p>
-                      </div>
+                    {/* Actions */}
+                    <div className="mt-6 pt-6 border-t border-gray-100 flex flex-col sm:flex-row gap-3 justify-end">
+                      <Button
+                        disabled={bidDisabled}
+                        className="bg-[#0063ff] hover:bg-[#0055dd]"
+                        onClick={() => handleAcceptBid(quote)}
+                      >
+                        Accept Bid
+                      </Button>
                     </div>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="mt-6 pt-6 border-t border-gray-100 flex flex-col sm:flex-row gap-3 justify-end">
-                    <Button variant="outline" className="flex items-center gap-2">
-                      <MessageSquare className="w-4 h-4" />
-                      Message
-                    </Button>
-                    <Button variant="outline" className="flex items-center gap-2">
-                      View Profile
-                      <ArrowRight className="w-4 h-4" />
-                    </Button>
-                    <Button 
-                      className="bg-[#0063ff] hover:bg-[#0055dd]"
-                      onClick={() => setSelectedBidId(bid.id)}
-                    >
-                      Accept Bid
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-gray-500">No bids received yet</p>
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="shortlisted">

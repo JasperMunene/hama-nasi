@@ -120,3 +120,70 @@ class SingleMoveResource(Resource):
         except Exception as e:
             current_app.logger.error(f"Error fetching move {move_id}: {str(e)}")
             return {"message": "Internal server error"}, 500
+
+class MovePatchResource(Resource):
+    @jwt_required()
+    def patch(self, move_id):
+        user_id = get_jwt_identity()
+        parser = reqparse.RequestParser()
+        parser.add_argument('from_address', type=str, required=False)
+        parser.add_argument('to_address', type=str, required=False)
+        parser.add_argument('move_date', type=str, required=False, help="Expected format: YYYY-MM-DD")
+        parser.add_argument('move_time', type=str, required=False, help="Expected format: HH:MM:SS")
+        parser.add_argument('estimated_price', type=float, required=False)
+        parser.add_argument('approved_price', type=float, required=False)
+        parser.add_argument('distance', type=float, required=False)
+        parser.add_argument('move_status', type=str, required=False)
+        args = parser.parse_args()
+
+        # Retrieve the move ensuring it belongs to the current user.
+        move = Move.query.filter_by(id=move_id, user_id=user_id).first()
+        if not move:
+            return {"message": "Move not found"}, 404
+
+        # Update fields if provided in the payload.
+        if args.get('from_address') is not None:
+            move.from_address = args['from_address']
+        if args.get('to_address') is not None:
+            move.to_address = args['to_address']
+        if args.get('move_date') is not None:
+            try:
+                move.move_date = datetime.datetime.strptime(args['move_date'], "%Y-%m-%d")
+            except Exception:
+                return {"message": "Invalid date format. Expected YYYY-MM-DD"}, 400
+        if args.get('move_time') is not None:
+            try:
+                move.move_time = datetime.datetime.strptime(args['move_time'], "%H:%M:%S").time()
+            except Exception:
+                return {"message": "Invalid time format. Expected HH:MM:SS"}, 400
+        if args.get('estimated_price') is not None:
+            move.estimated_price = args['estimated_price']
+        if args.get('approved_price') is not None:
+            move.approved_price = args['approved_price']
+        if args.get('distance') is not None:
+            move.distance = args['distance']
+        if args.get('move_status') is not None:
+            move.move_status = args['move_status']
+
+        try:
+            db.session.commit()
+            # Build a response dictionary to avoid recursive relationship issues.
+            move_data = {
+                "id": move.id,
+                "user_id": move.user_id,
+                "from_address": move.from_address,
+                "to_address": move.to_address,
+                "move_date": move.move_date.isoformat(),
+                "move_time": move.move_time.isoformat(),
+                "move_status": move.move_status,
+                "estimated_price": move.estimated_price,
+                "approved_price": move.approved_price,
+                "distance": move.distance,
+                "created_at": move.created_at.isoformat() if move.created_at else None,
+                "updated_at": move.updated_at.isoformat() if move.updated_at else None,
+            }
+            return {"message": "Move updated successfully", "move": move_data}, 200
+        except Exception as e:
+            db.session.rollback()
+            current_app.logger.error(f"Error updating move: {e}")
+            return {"message": "Internal server error"}, 500
