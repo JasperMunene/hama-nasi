@@ -40,7 +40,7 @@ export default function MoverDash() {
     // Fetch moves
     const fetchMoves = async () => {
       try {
-        const res = await fetch('/api/move', {
+        const res = await fetch('/api/moves', {
           method: 'GET',
           credentials: 'include'
         });
