@@ -8,7 +8,7 @@ from resources.auth_resource import (
     ForgotPasswordResource, ResetPasswordResource
 )
 from resources.user_resource import UserResource, SingleUser
-from resources.mover_resource import MoverResource, SingleMover
+from resources.mover_resource import MoverResource, SingleMover, MoverById
 from resources.inventory_resource import InventoryResource, UserInventoryResource, DeleteUserInventoryResource, PatchUserInventoryResource, InventoryItemResource
 from resources.property_resource import PropertyResource
 from resources.move_resource import MovesResource, MoveResource, SingleMove, SingleMoveResource, MovePatchResource
@@ -78,6 +78,7 @@ api.add_resource(SingleUser, '/user')
 # Mover Routes
 api.add_resource(MoverResource, '/movers')
 api.add_resource(SingleMover, '/mover')
+api.add_resource(MoverById, '/movers/<int:mover_id>')
 
 # Inventory Route
 api.add_resource(InventoryResource, '/inventory')

@@ -5,13 +5,15 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import Button from '@/components/elements/button/Button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Truck, DollarSign, Clock, Calendar, Shield, Star } from 'lucide-react';
+import { Truck, DollarSign } from 'lucide-react';
 import Image from 'next/image';
 
 export default function BidsPage() {
   const [selectedBidId, setSelectedBidId] = useState(null);
   const [latestMove, setLatestMove] = useState(null);
   const [quotes, setQuotes] = useState([]);
+  // State to store a mapping of mover id to company name
+  const [moverNames, setMoverNames] = useState({});
   const router = useRouter();
 
   // Fetch latest move
@@ -19,8 +21,8 @@ export default function BidsPage() {
     fetch('/api/move')
       .then((response) => response.json())
       .then((data) => {
-        // Determine the latest move by comparing created_at timestamps
         const moves = data.moves;
+        // Determine the latest move by comparing created_at timestamps
         const latest = moves.reduce((prev, curr) => {
           return new Date(curr.created_at) > new Date(prev.created_at) ? curr : prev;
         }, moves[0]);
@@ -41,6 +43,30 @@ export default function BidsPage() {
     }
   }, [latestMove]);
 
+  // After quotes are loaded, fetch mover details for each unique mover id
+  useEffect(() => {
+    if (quotes.length > 0) {
+      // Get unique mover ids from the quotes
+      const uniqueMoverIds = [...new Set(quotes.map((quote) => quote.mover_id))];
+      Promise.all(
+        uniqueMoverIds.map((id) =>
+          fetch(`/api/movers/${id}`)
+            .then((res) => res.json())
+            .then((data) => [id, data.company_name])
+        )
+      )
+        .then((results) => {
+          // Build a mapping of mover id to company name
+          const namesMap = results.reduce((acc, [id, companyName]) => {
+            acc[id] = companyName;
+            return acc;
+          }, {});
+          setMoverNames(namesMap);
+        })
+        .catch((error) => console.error('Error fetching mover details:', error));
+    }
+  }, [quotes]);
+
   // Handler to accept a bid: updates the move's approved_price and then redirects
   const handleAcceptBid = async (quote) => {
     try {
@@ -55,10 +81,8 @@ export default function BidsPage() {
       });
       const data = await response.json();
       if (response.ok) {
-        // Update latest move state with the new approved_price
         setLatestMove(data.move);
         setSelectedBidId(quote.id);
-        // Redirect to the success page with query parameters
         router.push(
           `/dashboard/bids/booking-success?fromLocation=${encodeURIComponent(latestMove.from_address)}&toLocation=${encodeURIComponent(latestMove.to_address)}&moveDate=${encodeURIComponent(latestMove.move_date)}&price=${encodeURIComponent(quote.quote_amount)}&distance=${encodeURIComponent(latestMove.distance)}`
         );
@@ -74,7 +98,7 @@ export default function BidsPage() {
     return <div>Loading...</div>;
   }
 
-  // Disable all Accept Bid buttons if a bid has already been accepted (approved_price is set)
+  // Disable Accept Bid buttons if a bid has already been accepted
   const bidDisabled = latestMove.approved_price !== null;
 
   return (
@@ -178,10 +202,9 @@ export default function BidsPage() {
                           <div>
                             <div className="flex items-center gap-2">
                               <h3 className="font-semibold text-lg">
-                                Mover ID: {quote.mover_id}
+                                {/* Display the mover's company name fetched from /api/movers/:id */}
+                                {moverNames[quote.mover_id] || 'Loading...'}
                               </h3>
-                              {/* Optionally, include mover verification icon */}
-                              {/* <Shield className="w-4 h-4 text-[#0063ff]" /> */}
                             </div>
                           </div>
                         </div>
