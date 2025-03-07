@@ -22,6 +22,7 @@ export default function SignInForm() {
   const [isChecked, setIsChecked] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({ email: "", password: "" });
 
   const handleLogin = async (e) => {
@@ -173,7 +174,11 @@ export default function SignInForm() {
                 </div>
                 <div>
                   <Button className="w-full" size="sm" type="submit">
-                    Login
+                  {loading ? (
+                      <span className="animate-pulse">Signing in...</span>
+                    ) : (
+                      "Login"
+                    )}
                   </Button>
                 </div>
               </div>
