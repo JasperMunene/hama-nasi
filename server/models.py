@@ -17,6 +17,7 @@ class User(db.Model, SerializerMixin):
     email = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=True)
     phone = db.Column(db.String(15))
+    image = db.Column(db.String(255), nullable=True)
     location = db.Column(db.String(255))
     role = db.Column(db.String(50), default='User', nullable=False)
     mover_id = db.Column(db.Integer, db.ForeignKey('movers.id', ondelete="SET NULL"), nullable=True)
@@ -43,6 +44,7 @@ class Mover(db.Model, SerializerMixin):
     company_name = db.Column(db.String(150), unique=True, nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=True)
     phone = db.Column(db.String(15), nullable=False)
+    image = db.Column(db.String(255), nullable=True)
     rating = db.Column(db.Float, default=0.0)
     availability_status = db.Column(db.String(50), default='Available')
     house_type = db.Column(db.String(100), server_default='None', nullable=False)
@@ -73,7 +75,7 @@ class Inventory(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     item_name = db.Column(db.String(150), nullable=False)
-    category = db.Column(db.String(100))
+    image = db.Column(db.String(900))
     property_id = db.Column(db.Integer, db.ForeignKey('properties.id', ondelete="CASCADE"), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.now())
     updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
@@ -90,6 +92,7 @@ class InventoryUser(db.Model, SerializerMixin):
     inventory_id = db.Column(db.Integer, db.ForeignKey('inventory.id', ondelete="CASCADE"), nullable=False)
     quantity = db.Column(db.Integer, default=1)
     condition = db.Column(db.String(50))
+    priority = db.Column(db.String(50))
     created_at = db.Column(db.DateTime, default=db.func.now())
     updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
 
@@ -109,9 +112,13 @@ class Move(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime, default=db.func.now())
     updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
 
+
+    distance = db.Column(db.Float, nullable=True)
+
     # Relationships
     bookings = db.relationship('Booking', backref='move', lazy=True, cascade="all, delete-orphan")
     quotes = db.relationship('Quote', backref='move', lazy=True, cascade="all, delete-orphan")
+
 
 # Bookings Table
 class Booking(db.Model, SerializerMixin):

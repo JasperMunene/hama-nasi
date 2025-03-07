@@ -50,7 +50,7 @@ export default function Verification() {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/auth/verify-otp", {
+      const response = await fetch("/api/auth/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, otp: otpValue }),
@@ -58,7 +58,7 @@ export default function Verification() {
       const data = await response.json();
       if (response.ok) {
         console.log("Email verified:", data);
-        router.push("/dashboard");
+        router.push("/onboarding");
       } else {
         console.error("Verification error:", data);
         alert(data.message || "Verification failed");
