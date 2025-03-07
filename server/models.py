@@ -75,7 +75,7 @@ class Inventory(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     item_name = db.Column(db.String(150), nullable=False)
-    image = db.Column(db.String(100))
+    image = db.Column(db.String(900))
     property_id = db.Column(db.Integer, db.ForeignKey('properties.id', ondelete="CASCADE"), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.now())
     updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
