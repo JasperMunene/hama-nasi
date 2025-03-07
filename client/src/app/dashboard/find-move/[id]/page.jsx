@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import  Input  from '@/components/form/input/InputField';
+import Input from '@/components/form/input/InputField';
 import { Textarea } from '@/components/ui/textarea';
 import { MapPin, Calendar, Clock, ArrowLeft, DollarSign, Truck } from 'lucide-react';
 import Link from 'next/link';
@@ -35,19 +35,20 @@ export default function MoveDetails() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`/api/moves/${params.id}/bid`, {
+      const response = await fetch('/api/quote', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          amount: parseFloat(bidAmount),
-          notes: bidNotes,
+          move_id: parseInt(params.id),
+          quote_amount: parseFloat(bidAmount),
+          details: bidNotes,
         }),
       });
 
       if (!response.ok) throw new Error('Failed to submit bid');
-      
+
       // Reset form and show success message
       setBidAmount('');
       setBidNotes('');

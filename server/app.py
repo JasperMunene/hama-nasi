@@ -12,6 +12,7 @@ from resources.mover_resource import MoverResource, SingleMover
 from resources.inventory_resource import InventoryResource, UserInventoryResource, DeleteUserInventoryResource, PatchUserInventoryResource, InventoryItemResource
 from resources.property_resource import PropertyResource
 from resources.move_resource import MovesResource, MoveResource, SingleMove
+from resources.quote_resource import QuoteResource
 from flask_jwt_extended import JWTManager
 from extensions import bcrypt, oauth
 from models import db
@@ -93,6 +94,9 @@ api.add_resource(PropertyResource, '/properties')
 api.add_resource(MovesResource, '/moves')
 api.add_resource(MoveResource, '/move')
 api.add_resource(SingleMove, '/move/<int:move_id>')
+
+# Quote Resource
+api.add_resource(QuoteResource, '/quote')
 
 # Health Routes
 api.add_resource(Health, '/')
