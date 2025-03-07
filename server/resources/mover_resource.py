@@ -78,3 +78,19 @@ class SingleMover(Resource):
         except Exception as e:
             current_app.logger.error(f"Error fetching mover for user {user_id}: {str(e)}")
             return {"message": "Internal server error"}, 500
+
+class MoverById(Resource):
+    @jwt_required()
+    def get(self, mover_id):
+        try:
+            # Retrieve the mover based on the provided mover_id
+            mover = Mover.query.get(mover_id)
+            if not mover:
+                return {"message": "Mover not found"}, 404
+
+            # Return the mover's data, excluding recursive relationships
+            return mover.to_dict(rules=("-quotes", "-bookings", "-reviews", "-users")), 200
+
+        except Exception as e:
+            current_app.logger.error(f"Error fetching mover with id {mover_id}: {str(e)}")
+            return {"message": "Internal server error"}, 500
