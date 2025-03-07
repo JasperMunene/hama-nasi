@@ -1,19 +1,19 @@
-## 🚚 Hama Nasi
+##  Hama Nasi
 
 A full-stack movers application built with Next.js, Tailwind CSS, Lucide-React, and PostgreSQL. Hama Nasi provides a Company Dashboard and a User Dashboard to efficiently manage moving services.
 
-# 🚀 Tech Stack
+#  Tech Stack
 - Frontend: Next.js, Tailwind CSS, Lucide-React
 - Backend: Next.js API routes
 - Database: PostgreSQL
 - Authentication: OAuth
 
 ## ✨ Features
-✅ User Dashboard – Manage personal moving requests
-✅ Company Dashboard – View and manage customer orders
-✅ Authentication System – Secure user login 
-✅ Responsive UI – Optimized for mobile and desktop
-✅ Database Storage – PostgreSQL for efficient data management
+. User Dashboard – Manage personal moving requests
+. Company Dashboard – View and manage customer orders
+. Authentication System – Secure user login 
+. Responsive UI – Optimized for mobile and desktop
+. Database Storage – PostgreSQL for efficient data management
 
 ## Installation
 1. Clone the repository:
@@ -70,7 +70,7 @@ npm run dev
 ```
 The frontend will be available at http://localhost:3000.
 
-## 🤝 Contributing
+##  Contributing
 Contributions are welcome! Follow these steps:
 
 1. Fork the repository.
@@ -79,13 +79,13 @@ Contributions are welcome! Follow these steps:
 4. Push to the branch: git push origin feature-name
 5. Open a pull request! 
 
-# 📜 License
+#  License
 This project is licensed under the MIT License. See the LICENSE file for details.
 
-# 📩 Contact
+#  Contact
 For inquiries or support, feel free to reach out:
 
-📧 contact@hamanasi.com
+ contact@hamanasi.com
 
 
 
