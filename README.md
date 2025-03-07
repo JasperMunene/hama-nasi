@@ -70,6 +70,9 @@ npm run dev
 ```
 The frontend will be available at http://localhost:3000.
 
+## Live Website
+You can view Hama Nasi @ <https://hama-nasi.vercel.app/>
+
 ##  Contributing
 Contributions are welcome! Follow these steps:
 
