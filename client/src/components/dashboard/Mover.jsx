@@ -63,12 +63,13 @@ export default function MoverDash() {
     // Fetch user inventory
     const fetchInventory = async () => {
       try {
-        const res = await fetch('/api/inventory/user', {
+        const res = await fetch('/api/inventory/', {
           method: 'GET',
           credentials: 'include'
         });
         if (res.ok) {
           const data = await res.json();
+          console.log(data.inventory)
           setUserInventory(data.inventory);
         } else {
           console.error('Failed to fetch user inventory');
@@ -255,18 +256,15 @@ export default function MoverDash() {
                     <thead>
                       <tr className="text-left text-sm text-gray-500">
                         <th className="pb-4">Item ID</th>
-                        <th className="pb-4">Quantity</th>
-                        <th className="pb-4">Condition</th>
-                        <th className="pb-4">Priority</th>
+                        <th className="pb-4">Item</th>
+                        
                       </tr>
                     </thead>
                     <tbody className="text-sm">
                       {userInventory.map((inv) => (
                         <tr key={inv.id} className="border-t border-gray-100">
-                          <td className="py-3">{inv.inventory_id}</td>
-                          <td className="py-3">{inv.quantity}</td>
-                          <td className="py-3">{inv.condition}</td>
-                          <td className="py-3">{inv.priority}</td>
+                          <td className="py-3">{inv.id}</td>
+                          <td className="py-3">{inv.item_name}</td>
                         </tr>
                       ))}
                     </tbody>

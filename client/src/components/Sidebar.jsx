@@ -20,8 +20,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Button from "@/components/elements/button/Button";
 import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
-import { usePathname } from "next/navigation";
 
 export function AppSidebar() {
   const router = useRouter();
@@ -59,8 +57,12 @@ export function AppSidebar() {
         headers: { "Content-Type": "application/json" },
       });
 
-      if (res.ok) router.push("/login");
-      else console.error("Logout failed");
+      if (res.ok) {
+        // Clear any client-side authentication data if needed here.
+        router.push("/login");
+      } else {
+        console.error("Logout failed");
+      }
     } catch (error) {
       console.error("Error logging out:", error);
     }
@@ -93,7 +95,6 @@ export function AppSidebar() {
               { id: "bids", href: "/dashboard/bids", icon: ListCheck, label: "Bids" },
             ],
           },
-          
         ];
 
   return (
@@ -166,10 +167,20 @@ export function AppSidebar() {
                 <p className="text-xs text-gray-500 truncate">{user.email || "Loading..."}</p>
               </div>
               <div className="relative">
-                <Bell className="h-5 w-5 text-gray-400 group-hover:text-[#0063ff] transition-colors" />
-                <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
+                <ChevronRight className={`h-5 w-5 transition-transform ${isProfileMenuOpen ? "rotate-90" : ""}`} />
               </div>
             </div>
+            {isProfileMenuOpen && (
+              <div className="mb-2 space-y-1 px-4">
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center w-full px-4 py-2 text-sm text-red-600 rounded hover:bg-red-50 transition-colors"
+                >
+                  <LogOut className="h-5 w-5 mr-2" />
+                  Logout
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </nav>

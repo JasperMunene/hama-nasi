@@ -7,6 +7,7 @@ import  Input  from '@/components/form/input/InputField';
 import  Label  from '@/components/form/Label'
 import { Edit, Trash2, Package, Upload, Plus } from 'lucide-react';
 import { toast } from 'sonner';
+import Spinner from '@/components/elements/Spinner';
 
 const InventoryPage = () => {
   const [inventory, setInventory] = useState([]);
@@ -149,9 +150,7 @@ const InventoryPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
-      </div>
+      <Spinner />
     );
   }
 
