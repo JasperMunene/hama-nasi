@@ -408,7 +408,7 @@ export default function Home() {
                 </div>
                 <div className="bg-white p-4 rounded-md shadow-sm">
                   <p className="text-gray-700 font-medium">General Inquiries</p>
-                  <p className="text-gray-500">contact@example.com</p>
+                  <p className="text-gray-500">contact@ hamanasi89@gmail.com</p>
                 </div>
                 <div className="bg-white p-4 rounded-md shadow-sm">
                   <p className="text-gray-700 font-medium">Toll-Free</p>
