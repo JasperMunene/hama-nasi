@@ -131,14 +131,14 @@ export default function MovePage() {
             <p className="text-gray-600">Scheduled for {formatDate(moveDetails.move_date)}</p>
           </div>
           <div className="flex gap-3">
-            <Button variant="outline" className="flex items-center gap-2">
+            {/* <Button variant="outline" className="flex items-center gap-2">
               <FileText className="w-4 h-4" />
               Download Invoice
-            </Button>
-            <Button className="bg-[#0063ff] hover:bg-[#0055dd] flex items-center gap-2">
+            </Button> */}
+            {/* <Button className="bg-[#0063ff] hover:bg-[#0055dd] flex items-center gap-2">
               <MessageSquare className="w-4 h-4" />
               Contact Support
-            </Button>
+            </Button> */}
           </div>
         </div>
 

@@ -21,6 +21,7 @@ import os
 from blacklist import BLACKLIST
 from oauth_setup import google
 import resend
+import datetime
 
 load_dotenv()
 
@@ -37,13 +38,16 @@ app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
 app.config['JWT_ACCESS_COOKIE_NAME'] = 'access_token'
 app.config['JWT_COOKIE_CSRF_PROTECT'] = False
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=1)
 app.json.compact = False
 
 # Initialize extensions
 bcrypt.init_app(app)
 oauth.init_app(app)
 
-CORS(app, supports_credentials=True, resources={r"/*": {"origins": "http://localhost:3000"}})
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": "https://hama-nasi.vercel.app/"}})
+
+
 migrate = Migrate(app, db)
 db.init_app(app)
 jwt = JWTManager(app)
