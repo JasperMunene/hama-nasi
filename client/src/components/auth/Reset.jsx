@@ -5,6 +5,7 @@ import Label from "@/components/form/Label";
 import Button from "@/components/elements/button/Button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from 'sonner';
 
 export default function Reset() {
   const router = useRouter();
@@ -13,7 +14,7 @@ export default function Reset() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email) {
-      alert("Please provide your email address");
+      toast.info("Please provide your email address");
       return;
     }
     try {
@@ -24,15 +25,15 @@ export default function Reset() {
       });
       const data = await response.json();
       if (response.ok) {
-        alert("Reset link sent to your email");
+        toast.success("Reset link sent to your email");
         // Optionally, redirect to a confirmation page:
         // router.push("/reset-confirmation");
       } else {
-        alert(data.message || "Failed to send reset link");
+        toast.error(data.message || "Failed to send reset link");
       }
     } catch (err) {
       console.error("Error sending reset link", err);
-      alert("Something went wrong!");
+      toast.error("Something went wrong!");
     }
   };
 
