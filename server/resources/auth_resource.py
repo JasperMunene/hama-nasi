@@ -260,7 +260,7 @@ class ForgotPasswordResource(Resource):
         db.session.commit()
 
         # Build a password reset link pointing to the frontend page.
-        reset_link = f"http://localhost:3000/new-password?token={reset_token}"
+        reset_link = f"https://hama-nasi.vercel.app/new-password?token={reset_token}"
         reset_email_params = {
             "from": "Hama Nasi <onboarding@hello.fueldash.net>",
             "to": [args["email"]],
