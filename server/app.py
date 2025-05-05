@@ -30,7 +30,7 @@ app.secret_key = os.getenv("SECRET_KEY", "a_default_secret_key")
 resend.api_key = os.getenv("RESEND_API_KEY")
 
 # App Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://hama_nasi_wxap_user:TEaHmE0oRSyeJ1pxWdoWtFXOfGVrJbaZ@dpg-cusmagdumphs73c9a090-a.frankfurt-postgres.render.com/hama_nasi_wxap'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("CONNECTION_STRING")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'secret'
 app.config['JWT_BLACKLIST_ENABLED'] = True
@@ -45,7 +45,7 @@ app.json.compact = False
 bcrypt.init_app(app)
 oauth.init_app(app)
 
-CORS(app, supports_credentials=True, resources={r"/*": {"origins": "https://hama-nasi.vercel.app/"}})
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": "http://localhost:3000"}})
 
 
 migrate = Migrate(app, db)
